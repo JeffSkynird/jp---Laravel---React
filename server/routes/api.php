@@ -71,6 +71,49 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('products', 'App\Http\Controllers\v1\Inventario\ProductController@index');
     Route::delete('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@delete');
 
+    
+    Route::post('suppliers', 'App\Http\Controllers\v1\Inventario\SupplierController@create');
+    Route::put('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@update');
+    Route::get('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@show');
+    Route::get('suppliers', 'App\Http\Controllers\v1\Inventario\SupplierController@index');
+    Route::delete('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@delete');
+
+    Route::post('orders', 'App\Http\Controllers\v1\Inventario\OrderController@create');
+    Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
+    Route::get('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@show');
+    Route::get('orders', 'App\Http\Controllers\v1\Inventario\OrderController@index');
+    Route::delete('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@delete');
+
+    Route::post('features', 'App\Http\Controllers\v1\Inventario\FeatureController@create');
+    Route::put('features/{id}', 'App\Http\Controllers\v1\Inventario\FeatureController@update');
+    Route::get('features/{id}', 'App\Http\Controllers\v1\Inventario\FeatureController@show');
+    Route::get('features', 'App\Http\Controllers\v1\Inventario\FeatureController@index');
+    Route::delete('features/{id}', 'App\Http\Controllers\v1\Inventario\FeatureController@delete');
+
+    Route::post('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@create');
+    Route::put('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@update');
+    Route::get('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@show');
+    Route::get('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@index');
+    Route::delete('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@delete');
+
+    Route::post('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@create');
+    Route::put('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@update');
+    Route::get('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@show');
+    Route::get('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@index');
+    Route::delete('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@delete');
+
+    Route::post('transfers', 'App\Http\Controllers\v1\Inventario\TransferController@create');
+    Route::put('transfers/{id}', 'App\Http\Controllers\v1\Inventario\TransferController@update');
+    Route::get('transfers/{id}', 'App\Http\Controllers\v1\Inventario\TransferController@show');
+    Route::get('transfers', 'App\Http\Controllers\v1\Inventario\TransferController@index');
+    Route::delete('transfers/{id}', 'App\Http\Controllers\v1\Inventario\TransferController@delete');
+
+    Route::post('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@create');
+    Route::put('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@update');
+    Route::get('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@show');
+    Route::get('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@index');
+    Route::delete('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@delete');
+
     Route::middleware('auth:api')->group(function () {
        
         Route::put('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@updateAuth');
