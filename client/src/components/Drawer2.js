@@ -14,9 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-
+import AccountCircle from '@material-ui/icons/PermIdentity';
+import NotificationsIcon from '@material-ui/icons/NotificationsNone';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
@@ -254,6 +253,9 @@ function ResponsiveDrawer(props) {
             {
                 // initializer.usuario != null ?
                 history.location.pathname != "/bienvenida" && history.location.pathname != "/login" ?
+                
+                <React.Fragment>
+
                     <nav className={classes.drawer} aria-label="mailbox folders">
                         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                         <Hidden smUp implementation="css">
@@ -285,57 +287,57 @@ function ResponsiveDrawer(props) {
                             </Drawer>
                         </Hidden>
                     </nav>
+    <AppBar position="fixed" className={classes.appBar} color="white" elevation={0} style={{border:'1px solid rgba(0, 0, 0, 0.12)'}}>
+    <Toolbar>
+        <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            className={classes.menuButton}
+        >
+            <MenuIcon />
+        </IconButton>
+   
+        <div className={classes.search}>
+            <div className={classes.searchIcon}>
+                <SearchIcon />
+            </div>
+            <InputBase
+                placeholder="Search…"
+                classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+            />
+        </div>
+        <div className={classes.grow} />
 
+        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
+        <IconButton aria-label="show 4 new mails" color="inherit" >
+
+               <NotificationsIcon style={{color:'#1e88e5'}}/>
+
+               </IconButton>
+
+            </Avatar>
+            <Avatar variant="rounded" style={{ marginLeft:10,marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
+        <IconButton aria-label="show 4 new mails" color="inherit">
+
+               <AccountCircle style={{color:'#5e35b1'}}/>
+               </IconButton>
+
+            </Avatar>
+
+
+    </Toolbar>
+</AppBar>
+</React.Fragment>
                     :
                     null
             }
-            <AppBar position="fixed" className={classes.appBar} color="white" elevation={0} style={{border:'1px solid rgba(0, 0, 0, 0.12)'}}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-               
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>
-                    <div className={classes.grow} />
-
-                    <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
-                    <IconButton aria-label="show 4 new mails" color="inherit" >
-
-                           <NotificationsIcon style={{color:'#1e88e5'}}/>
-
-                           </IconButton>
-
-                        </Avatar>
-                        <Avatar variant="rounded" style={{ marginLeft:10,marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
-                    <IconButton aria-label="show 4 new mails" color="inherit">
-
-                           <AccountCircle style={{color:'#5e35b1'}}/>
-                           </IconButton>
-
-                        </Avatar>
-
-           
-                </Toolbar>
-            </AppBar>
-            <main className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
+         <main className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
 
                 <IconButton
                     color="inherit"
