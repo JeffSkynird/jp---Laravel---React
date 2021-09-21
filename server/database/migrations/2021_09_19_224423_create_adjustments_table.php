@@ -18,7 +18,7 @@ class CreateAdjustmentsTable extends Migration
             $table->enum('status', ['I', 'E']);
             $table->foreignId('product_id')->constrained('products');
             $table->integer('quantity');
-            $table->foreignId('warehouse_destination')->constrained('warehouses');
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
             $table->foreignId('reason_id')->constrained('reasons');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();

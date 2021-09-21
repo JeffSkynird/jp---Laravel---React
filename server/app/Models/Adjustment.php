@@ -13,7 +13,7 @@ class Adjustment extends Model
         'status',
         'product_id',
         'quantity',
-        'warehouse_destination',
+        'warehouse_id',
         'reason_id',
         'ip',
         'terminal',
