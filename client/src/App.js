@@ -23,6 +23,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Login from './containers/main/Login'
 import { useHistory } from "react-router-dom";
 import Drawer2 from './components/Drawer2'
+import purple from '@material-ui/core/colors/purple';
+
 /* import Bienvenida from './containers/main/Bienvenida'
 
 
@@ -33,6 +35,10 @@ import Settings from './containers/panel/Settings';
  */
 
 import Panel from './containers/panel/Panel';
+import Pedidos from './containers/Inventario/Pedidos/Index';
+import Productos from './containers/Inventario/Productos/Index';
+import Bodegas from './containers/Inventario/Bodegas/Index';
+
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -42,7 +48,7 @@ function Alert(props) {
 export default function App(props) {
   const { usuario, notificacion, mostrarNotificacion, loader, sound, playSound } = useContext(Initializer);
   let history = useHistory();
-  const [colorP, setColorP] = useState(blue)
+  const [colorP, setColorP] = useState(indigo)
   const [colorS, setColorS] = useState(indigo)
   const [white, setWhite] = useState(createMuiTheme({
     palette: {
@@ -166,7 +172,11 @@ export default function App(props) {
                 <Switch>
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/panel" component={Panel} />
-                  <Route render={() => <Redirect to="/login" />} />
+                  <Route exact path="/inventario/pedidos" component={Pedidos} />
+                  <Route exact path="/inventario/productos" component={Productos} />
+                  <Route exact path="/inventario/bodegas" component={Bodegas} />
+
+                  <Route render={() => <Redirect to="/panel" />} />
                   
                 </Switch>
 

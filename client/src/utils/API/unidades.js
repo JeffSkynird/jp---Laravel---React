@@ -1,11 +1,11 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editarSistema = (id,data, store) => {
+export const editarUnidad= (id,data, store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
-    let url = ENTRYPOINT+"products/"+id;
+    let url = ENTRYPOINT+"unities/"+id;
     let setting = {
       method: "PUT",
       url: url,
@@ -34,10 +34,10 @@ export const editarSistema = (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminarSistema = (id,store) => {
+export const eliminarUnidad = (id,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
-    let url = ENTRYPOINT+"products/"+id;
+    let url = ENTRYPOINT+"unities/"+id;
     
     let setting = {
       method: "DELETE",
@@ -68,10 +68,10 @@ export const eliminarSistema = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrarSistema = (data,store) => {
+export const registrarUnidad = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
-    let url = ENTRYPOINT+"products";
+    let url = ENTRYPOINT+"unities";
     let setting = {
       method: "POST",
       url: url,
@@ -104,7 +104,7 @@ export const obtenerTodos = (setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
  
-  let url = ENTRYPOINT+"products"
+  let url = ENTRYPOINT+"unities"
   let setting = {
     method: "Get",
     url: url,

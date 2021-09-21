@@ -11,7 +11,9 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $data = Product::all();
+  
+            $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
+    ->select('products.*','unities.name as unity')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

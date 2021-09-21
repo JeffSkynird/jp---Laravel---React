@@ -19,8 +19,13 @@ import NotificationsIcon from '@material-ui/icons/NotificationsNone';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useHistory } from "react-router-dom";
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+                    import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
 import Toolbar from '@material-ui/core/Toolbar';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { PUBLIC_PATH } from '../config/API'
@@ -29,8 +34,15 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme, alpha } from '@material-ui/core/styles';
 import Initializer from '../store/Initializer'
 import { desencriptarJson } from '../utils/security'
+import AllInboxIcon from '@material-ui/icons/AllInbox';
+import StoreIcon from '@material-ui/icons/Store';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import TransferWithinAStationIcon from '@material-ui/icons/TransferWithinAStation';
+import TransformIcon from '@material-ui/icons/Transform';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import { cerrarSesion, obtenerUsuario } from '../utils/API/auth';
+import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
+
 import { useLocation, Switch } from 'react-router-dom';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -43,30 +55,30 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
         color: 'inherit',
-      },
-      inputInput: {
+    },
+    inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-          width: '20ch',
+            width: '20ch',
         },
-      },
-     
+    },
+
     search: {
-        height:45,
-        borderWidth:1,
-        borderStyle:'solid',
-        borderColor:'rgba(0, 0, 0, 0.12)',
+        height: 45,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'rgba(0, 0, 0, 0.12)',
         position: 'relative',
         borderRadius: 10,
         backgroundColor: alpha(theme.palette.common.white, 0.15),
         '&:hover': {
-            borderColor:'rgb(30, 136, 229)',
-            borderWidth:1,
-            borderStyle:'solid'
+            borderColor: 'rgb(30, 136, 229)',
+            borderWidth: 1,
+            borderStyle: 'solid'
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
@@ -78,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
-        height: '100%',color:'gray',
+        height: '100%', color: 'gray',
         position: 'absolute',
         pointerEvents: 'none',
         display: 'flex',
@@ -86,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
     },
     inputRoot: {
-        color: 'inherit',height:'100%'
+        color: 'inherit', height: '100%'
     },
     root: {
         [theme.breakpoints.up('sm')]: {
@@ -94,6 +106,9 @@ const useStyles = makeStyles((theme) => ({
         },
         overflow: 'hidden'
     },
+    nested: {
+        paddingLeft: theme.spacing(4),
+      },
     avatar: {
         margin: theme.spacing(2),
 
@@ -102,6 +117,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     drawer: {
+        overflow:'hidden',
         [theme.breakpoints.up('sm')]: {
             width: drawerWidth,
             flexShrink: 0,
@@ -130,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
     },
     grow: {
         flexGrow: 1,
-      },
+    },
 }));
 
 function ResponsiveDrawer(props) {
@@ -139,6 +155,8 @@ function ResponsiveDrawer(props) {
     const location = useLocation();
     const classes = useStyles();
     const theme = useTheme();
+    const [openCollapse, setOpenCollapse] = React.useState(false);
+
 
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -148,6 +166,8 @@ function ResponsiveDrawer(props) {
 
     const [names, setNames] = React.useState('')
     const initializer = useContext(Initializer);
+
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerUsuario(setInfo, initializer)
@@ -161,6 +181,9 @@ function ResponsiveDrawer(props) {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+    function handleOpenSettings() {
+        setOpenCollapse(!openCollapse);
+    }
     const cerrar = () => {
         cerrarSesion(initializer)
     }
@@ -180,7 +203,7 @@ function ResponsiveDrawer(props) {
 
 
     }
-    
+
     const drawer = (
         <div >
             <div style={{ marginBottom: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
@@ -213,15 +236,64 @@ function ResponsiveDrawer(props) {
                         <ListItemIcon style={{ color: 'inherit' }}><DashboardIcon /> </ListItemIcon>
                         <ListItemText primary={'Dashboard'} />
                     </ListItem>
-                    <ListItem button onClick={() => props.history.push('sistemas')} style={comprobador('/sistemas')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><DesktopWindowsIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Inventario'} />
-                    </ListItem>
-                    <ListItem button onClick={() => props.history.push('evaluaciones')} style={comprobador('/evaluaciones')}>
+
+                
+                    <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
                         <ListItemIcon style={{ color: 'inherit' }}><ListIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Proveedores'} />
+                        <ListItemText primary={'Inventario'} />
+                        {openCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </ListItem>
 
+                    <Collapse in={openCollapse} timeout="auto" unmountOnExit>
+                        <List  component="div" disablePadding >
+                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/pedidos')} >
+                                <ListItemIcon>
+                                    <AllInboxIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Pedidos" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/bodegas')} >
+                                <ListItemIcon>
+                                    {" "}
+                                    <StoreIcon />{" "}
+                                </ListItemIcon>
+                                <ListItemText  primary="Bodegas" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/productos')} >
+                                <ListItemIcon>
+                                    <PostAddIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Productos" />
+                            </ListItem>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <TransferWithinAStationIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Transferencias" />
+                            </ListItem>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <TransformIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Ajuste" />
+                            </ListItem>
+                            <ListItem button className={classes.nested}>
+                                <ListItemIcon>
+                                    <EmojiTransportationIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Proveedores" />
+                            </ListItem>
+                        </List>
+                    </Collapse>
+
+                    <ListItem button onClick={() => props.history.push('evaluaciones')} style={comprobador('/evaluaciones')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Personal'} />
+                    </ListItem>
+                    <ListItem button onClick={() => props.history.push('evaluaciones')} style={comprobador('/evaluaciones')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><SettingsIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Administración'} />
+                    </ListItem>
                 </List>
 
                 <div>
@@ -229,7 +301,7 @@ function ResponsiveDrawer(props) {
                     <List>
                         <ListItem button onClick={() => props.history.push('ajustes')} style={comprobador('/ajustes')} >
                             <ListItemIcon style={{ color: 'inherit' }}><SettingsIcon /> </ListItemIcon>
-                            <ListItemText primary={'Administración'} />
+                            <ListItemText primary={'Configuración'} />
                         </ListItem>
                         <ListItem button onClick={cerrar}>
                             <ListItemIcon><ExitToAppIcon /> </ListItemIcon>
@@ -253,103 +325,93 @@ function ResponsiveDrawer(props) {
             {
                 // initializer.usuario != null ?
                 history.location.pathname != "/bienvenida" && history.location.pathname != "/login" ?
-                
-                <React.Fragment>
 
-                    <nav className={classes.drawer} aria-label="mailbox folders">
-                        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-                        <Hidden smUp implementation="css">
-                            <Drawer
-                                container={container}
-                                variant="temporary"
-                                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                                open={mobileOpen}
-                                onClose={handleDrawerToggle}
-                                classes={{
-                                    paper: classes.drawerPaper,
-                                }}
-                                ModalProps={{
-                                    keepMounted: true, // Better open performance on mobile.
-                                }}
-                            >
-                                {drawer}
-                            </Drawer>
-                        </Hidden>
-                        <Hidden xsDown implementation="css">
-                            <Drawer
-                                classes={{
-                                    paper: classes.drawerPaper,
-                                }}
-                                variant="permanent"
-                                open
-                            >
-                                {drawer}
-                            </Drawer>
-                        </Hidden>
-                    </nav>
-    <AppBar position="fixed" className={classes.appBar} color="white" elevation={0} style={{border:'1px solid rgba(0, 0, 0, 0.12)'}}>
-    <Toolbar>
-        <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-        >
-            <MenuIcon />
-        </IconButton>
-   
-        <div className={classes.search}>
-            <div className={classes.searchIcon}>
-                <SearchIcon />
-            </div>
-            <InputBase
-                placeholder="Search…"
-                classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-            />
-        </div>
-        <div className={classes.grow} />
+                    <React.Fragment>
+                        <AppBar position="fixed" className={classes.appBar} color="white" elevation={0} style={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                            <Toolbar>
 
-        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
-        <IconButton aria-label="show 4 new mails" color="inherit" >
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    edge="start"
+                                    onClick={handleDrawerToggle}
+                                    className={classes.menuButton}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
 
-               <NotificationsIcon style={{color:'#1e88e5'}}/>
+                                <div className={classes.search}>
+                                    <div className={classes.searchIcon}>
+                                        <SearchIcon />
+                                    </div>
+                                    <InputBase
+                                        placeholder="Search…"
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        inputProps={{ 'aria-label': 'search' }}
+                                    />
+                                </div>
+                                <div className={classes.grow} />
 
-               </IconButton>
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit" >
 
-            </Avatar>
-            <Avatar variant="rounded" style={{ marginLeft:10,marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
-        <IconButton aria-label="show 4 new mails" color="inherit">
+                                        <NotificationsIcon style={{ color: '#1e88e5' }} />
 
-               <AccountCircle style={{color:'#5e35b1'}}/>
-               </IconButton>
+                                    </IconButton>
 
-            </Avatar>
+                                </Avatar>
+                                <Avatar variant="rounded" style={{ marginLeft: 10, marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit">
 
+                                        <AccountCircle style={{ color: '#5e35b1' }} />
+                                    </IconButton>
 
-    </Toolbar>
-</AppBar>
-</React.Fragment>
+                                </Avatar>
+
+                            </Toolbar>
+                        </AppBar>
+                        <nav className={classes.drawer} aria-label="mailbox folders">
+                            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                            <Hidden smUp implementation="css">
+                                <Drawer
+                                    container={container}
+                                    variant="temporary"
+                                    anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                                    open={mobileOpen}
+                                    onClose={handleDrawerToggle}
+                                    classes={{
+                                        paper: classes.drawerPaper,
+                                    }}
+                                    ModalProps={{
+                                        keepMounted: true, // Better open performance on mobile.
+                                    }}
+                                >
+                                    {drawer}
+                                </Drawer>
+                            </Hidden>
+                            <Hidden xsDown implementation="css">
+                                <Drawer
+                                    classes={{
+                                        paper: classes.drawerPaper,
+                                    }}
+                                    variant="permanent"
+                                    open
+                                >
+                                    {drawer}
+                                </Drawer>
+                            </Hidden>
+                        </nav>
+                    </React.Fragment>
                     :
                     null
             }
-         <main className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
+            <main className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
 
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    edge="start"
-                    style={{ display: history.location.pathname == "/bienvenida" || history.location.pathname == "/login" ? 'none' : '' }}
-                    onClick={handleDrawerToggle}
-                    className={classes.menuButton}
-                >
-                    <MenuIcon />
-                </IconButton>
 
+                <div className={classes.toolbar} />
                 {props.children}
             </main>
         </div>
