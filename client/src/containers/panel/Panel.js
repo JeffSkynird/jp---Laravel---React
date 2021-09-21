@@ -18,7 +18,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { LocalizationTable, TableIcons, removeAccent } from '../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { obtenerSistemaEvaluaciones, obtenerTodos } from '../../utils/API/sistemas.js';
 import Crear from './components/Crear'
 import Eliminar from './components/Eliminar'
@@ -209,10 +209,16 @@ export default function Sistemas(props) {
                 <Card class={classes.card} style={{ width: 300, height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
                     <CardContent>
                         <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#5e35b1', borderRadius: 5, marginBottom: 15 }} >
+                        <IconButton aria-label="show 4 new mails" color="inherit" >
+
                             <MoreHorizIcon fontSize="small" />
+                            </IconButton>
+
                         </Avatar>
                         <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#4527a0', borderRadius: 5, marginBottom: 15 }} >
+
                             <DesktopWindowsIcon />
+
                         </Avatar>
 
 
@@ -227,7 +233,11 @@ export default function Sistemas(props) {
                 <Card class={classes.card2} style={{ width: 300, height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#1e88e5', borderRadius: 12 }}>
                     <CardContent>
                         <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#1e88e5', borderRadius: 5, marginBottom: 15 }} >
+                        <IconButton aria-label="show 4 new mails" color="inherit" >
+
                             <MoreHorizIcon fontSize="small" />
+                            </IconButton>
+
                         </Avatar>
                         <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#1565c0', borderRadius: 5, marginBottom: 15 }} >
                             <DesktopWindowsIcon />

@@ -11,7 +11,7 @@ import AppBar from '@material-ui/core/AppBar';
 import ArrowDropDownCircle from '@material-ui/icons/ArrowDropDownCircle';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Slide from '@material-ui/core/Slide';
-import Drawer from './Drawer';
+import Drawer from './Drawer2';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
