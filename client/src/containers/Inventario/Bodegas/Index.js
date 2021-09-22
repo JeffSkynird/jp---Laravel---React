@@ -16,9 +16,10 @@ import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/sistemas.js';
+import { obtenerTodos } from '../../../utils/API/bodegas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
+import Filtro from './componentes/Filtro'
 
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
@@ -28,6 +29,7 @@ export default function Sistemas(props) {
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
+    const [openFilter, setOpenFilter] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -50,9 +52,11 @@ export default function Sistemas(props) {
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
+            <Filtro setOpen={setOpenFilter} open={openFilter}  />
+
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Pedidos
+                    Bodegas
                 </Typography>
                 <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
                         Nuevo
@@ -61,7 +65,7 @@ export default function Sistemas(props) {
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5 }}>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
                     <CardContent>
                         <Typography variant="subtitle1" gutterBottom>
                             Totales
@@ -70,42 +74,26 @@ export default function Sistemas(props) {
                             <Typography variant="h4" gutterBottom>
                                 {data.length}
                             </Typography>
-                            <Avatar variant="rounded" style={{ backgroundColor: '#EC4C47', borderRadius: 20 }} >
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(94, 53, 177)', borderRadius: 20 }} >
                                 <DesktopWindowsIcon />
                             </Avatar>
                         </div>
                     </CardContent>
                 </Card>
-                <Card style={{ width: 300, height: 120 }}>
-                    <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Evaluados
-                        </Typography>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="h4" gutterBottom>
-                                {total()}
-                            </Typography>
-                            <Avatar variant="rounded" style={{ backgroundColor: '#47B881', borderRadius: 20 }} >
-                                <EqualizerIcon />
-                            </Avatar>
-                        </div>
-                    </CardContent>
-                </Card>
-
+               
             </Grid>
       
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
-
+                      
                         { title: "Nombre", field: "name" },
-                        { title: "Url", field: "url" },
                         { title: "Descripción", field: "description" },
-                        { title: "Evaluaciones", field: "evaluaciones" },
-                        { title: "Fecha", field: "created_at", type: "datetime" },
+                        { title: "Zona", field: "zone" },
+                        { title: "Productos", field: "products" },
 
-
+                        { title: "Registro", field: "created_at", type: "datetime" },
 
 
                     ]}
@@ -125,6 +113,15 @@ export default function Sistemas(props) {
                                 setOpen(true)
                             }
                         },
+                        {
+                            icon: TableIcons.Add,
+                            tooltip: 'Añadir productos',
+
+                            onClick: (event, rowData) => {
+                                setSelected(rowData)
+                                setOpen(true)
+                            }
+                        },
 
                         {
                             icon: TableIcons.Delete,
@@ -135,6 +132,12 @@ export default function Sistemas(props) {
                                 setOpen2(true)
                             }
                         },
+                        {
+                            icon: TableIcons.Filter,
+                            tooltip: 'Filtrar',
+                            isFreeAction: true,
+                            onClick: (event) => setOpenFilter(true)
+                          }
 
                     ]}
 

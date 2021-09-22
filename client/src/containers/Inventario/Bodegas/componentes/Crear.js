@@ -7,10 +7,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
-
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
-import { Grid } from '@material-ui/core';
-import { editarSistema, registrarSistema } from '../../../../utils/API/sistemas';
+import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
+import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/bodegas';
+import { obtenerTodos as obtenerZonas } from '../../../../utils/API/zones';
+import { Autocomplete } from '@material-ui/lab';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -18,21 +21,43 @@ export default function Crear(props) {
     const initializer = React.useContext(Initializer);
 
     const [nombre, setNombre] = React.useState("")
-    const [url, setUrl] = React.useState("")
+    const [jpcode, setJpcode] = React.useState("")
+    const [supplierCode, setSupplirCode] = React.useState("")
+    const [serie, setSerie] = React.useState("")
+    const [zone, setZone] = React.useState("")
+    const [zoneData, setZoneData] = React.useState([])
+    const [image, setImage] = React.useState("")
+
+    const [stock, setStock] = React.useState("")
+    const [stockMin, setStockMin] = React.useState("")
+    const [stockMax, setStockMax] = React.useState("")
+
     const [descripcion, setDescripcion] = React.useState("")
+    React.useEffect(() => {
+        if (initializer.usuario != null) {
+
+        obtenerZonas(setZoneData,initializer)
+        }
+  
+}, [initializer.usuario])
     React.useEffect(()=>{
         if(props.sistema!=null){
             setNombre(props.sistema.name)
-            setUrl(props.sistema.url)
+            setZone(props.sistema.zone_id)
             setDescripcion(props.sistema.description)
         }
     },[props.sistema])
     const guardar=()=>{
+        let data={ 
+        'name': nombre,
+        'description': descripcion,
+        'zone_id': zone,
+        'user_id': 1}
         if(props.sistema==null){
-            registrarSistema({name:nombre,url:url,description:descripcion},initializer)
+            registrarBodega(data,initializer)
             limpiar()
         }else{
-            editarSistema(props.sistema.id,{name:nombre,url:url,description:descripcion},initializer)
+            editarBodega(props.sistema.id,data,initializer)
             limpiar()
 
         }
@@ -41,10 +66,22 @@ export default function Crear(props) {
     }
     const limpiar=()=>{
         setNombre("")
-        setUrl("")
-        setDescripcion("")
+           
+
+            setZone("")
+
+            setDescripcion("")
         props.setSelected(null)
         props.carga()
+    }
+    const getName = (id) => {
+        let object = null
+        zoneData.map((e) => {
+            if (id == e.id) {
+                object = { ...e }
+            }
+        })
+        return object
     }
     return (
         <Dialog
@@ -58,35 +95,54 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="alert-dialog-slide-title">Sistemas</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Bodegas</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                   {props.sistema!=null?"Formulario de edición de sistema": "Formulario de creación de sistema"}
+                   {props.sistema!=null?"Formulario de edición de bodegas": "Formulario de creación de bodegas"}
                 </DialogContentText>
-                <Grid container>
+            
+                <Grid container spacing={2}>
                     <Grid item xs={12}>    <TextField
                         variant="outlined"
-                        style={{ marginBottom: 10,width:'100%' }}
-                        size="small"
+                        style={{ width:'100%' }}
+                      
                         label="Nombre"
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
 
                     /></Grid>
-                    <Grid item xs={12}>   <TextField
-                        variant="outlined"
-                        style={{ marginBottom: 10,width:'100%' }}
-                        size="small"
-                        label="Url"
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
+                  
+                    
+                     <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                        <Autocomplete
+                      
+                            style={{ width: '100%'}}
+                                options={zoneData}
+                                value={getName(zone)}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(event, value) => {
+                                    if (value != null) {
 
-                    /></Grid>
+                                        setZone(value.id)
+                                    } else {
+
+                                        setZone('')
+
+                                    }
+
+                                }} // prints the selected value
+                                renderInput={params => (
+                                    <TextField {...params} label="Seleccione una zona" variant="outlined" fullWidth />
+                                )}
+                            />
+                           
+                        </Grid>
+                    
                     <Grid item xs={12}>  <TextField
                         variant="outlined"
 
-                        style={{ marginBottom: 10,width:'100%' }}
-                   
+                        style={{ width:'100%' }}
+                                    
                         label="Descripción"
 
                         value={descripcion}

@@ -11,7 +11,8 @@ class SupplierController extends Controller
     public function index()
     {
         try {
-            $data = Supplier::all();
+            $data = Supplier::leftjoin('orders', 'orders.supplier_id', '=', 'suppliers.id')
+            ->selectRaw('suppliers.*,count(orders.*) as products')->groupBy('suppliers.id')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

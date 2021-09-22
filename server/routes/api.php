@@ -78,11 +78,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('suppliers', 'App\Http\Controllers\v1\Inventario\SupplierController@index');
     Route::delete('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@delete');
 
-    Route::post('orders', 'App\Http\Controllers\v1\Inventario\OrderController@create');
-    Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
     Route::get('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@show');
     Route::get('orders', 'App\Http\Controllers\v1\Inventario\OrderController@index');
     Route::delete('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@delete');
+
+    Route::get('order_detail/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@obtenerDetallePedido');
 
     Route::post('features', 'App\Http\Controllers\v1\Inventario\FeatureController@create');
     Route::put('features/{id}', 'App\Http\Controllers\v1\Inventario\FeatureController@update');
@@ -115,7 +115,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::delete('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@delete');
 
     Route::middleware('auth:api')->group(function () {
-       
+        
+        Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');
+        Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
+
+        Route::post('orders', 'App\Http\Controllers\v1\Inventario\OrderController@create');
         Route::put('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@updateAuth');
         Route::get('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@showAuth');
   

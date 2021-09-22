@@ -18,7 +18,7 @@ export default function Propager(props) {
                
             }else{
                 if(history.location.pathname!="/login"){
-                    history.push("/bienvenida")
+                    history.push("/login")
                 }
               
                

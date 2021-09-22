@@ -277,7 +277,7 @@ function ResponsiveDrawer(props) {
                                 </ListItemIcon>
                                 <ListItemText  primary="Ajuste" />
                             </ListItem>
-                            <ListItem button className={classes.nested}>
+                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/proveedores')}>
                                 <ListItemIcon>
                                     <EmojiTransportationIcon />
                                 </ListItemIcon>

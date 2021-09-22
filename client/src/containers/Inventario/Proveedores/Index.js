@@ -12,71 +12,51 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
-import Confirmar from '../../../components/Confirmar'
- 
+
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { autorizarOrden, obtenerTodos } from '../../../utils/API/pedidos.js';
+import { obtenerTodos } from '../../../utils/API/proveedores.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
+import Filtro from './componentes/Filtro'
 
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
 
     const [data, setData] = React.useState([])
-    const [kpis, setKpis] = React.useState({autorizados:0,no_autorizados:0})
-
-    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
-
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
-    const [selected3, setSelected3] = React.useState(null)
+    const [openFilter, setOpenFilter] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerTodos(setData, initializer)
         }
     }, [initializer.usuario])
-
-    React.useEffect(() => {
-        if (data.length!=0) {
-            let aut=0
-            let noaut=0
-            data.map((e)=>{
-                if(e.authorized!=null){
-                    aut++
-                }else{
-                    noaut++
-                }
-            })
-            setKpis({autorizados:aut,no_autorizados:noaut})
-        }
-    }, [data])
     const carga = () => {
         obtenerTodos(setData, initializer)
         setSelected(null)
         setSelected2(null)
-        setSelected3(null)
     }
-    const autorizar=()=>{
-        if(selected3!=null){
-            autorizarOrden(selected3, initializer,carga)
-            
-        }
+    const total=()=>{
+        let tot=0
+        data.map((e)=>{
+            tot+=e.evaluaciones
+        })
+        return tot
     }
-
     return (
         <Grid container spacing={2}>
-         <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={autorizar} titulo='¿Desea continuar? Se autorizará la orden.'/>
-
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
+            <Filtro setOpen={setOpenFilter} open={openFilter}  />
+
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Pedidos
+                    Proveedores
                 </Typography>
                 <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
                         Nuevo
@@ -100,51 +80,30 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
-                    <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Autorizados
-                        </Typography>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="h4" gutterBottom>
-                                {kpis.autorizados}
-                            </Typography>
-                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(30, 136, 229)', borderRadius: 20 }} >
-                                <DesktopWindowsIcon />
-                            </Avatar>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
-                    <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Sin autorizar
-                        </Typography>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="h4" gutterBottom>
-                            {kpis.no_autorizados}
-                            </Typography>
-                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(216, 67, 21)', borderRadius: 20 }} >
-                                <DesktopWindowsIcon />
-                            </Avatar>
-                        </div>
-                    </CardContent>
-                </Card>
+              
             </Grid>
       
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
+                        {
+                            title: 'Logo',
+                            field: 'avatar',
+                            render: rowData => (
+                              <img
+                                style={{ height: 36, borderRadius: '50%' }}
+                                src={rowData.logo}
+                              />
+                            ),
+                          },
+                        { title: "Razón Social", field: "business_name" },
+                        { title: "RUC", field: "ruc" },
+                        { title: "Celular", field: "cellphone" },
+                        { title: "Correo", field: "email" },
+                        { title: "Productos", field: "products" },
 
-                        { title: "Número", field: "id" },
-                        { title: "Proveedor", field: "supplier" },
-                        { title: "Autorizado por", field: "authorized" },
-                        { title: "Creado por", field: "created" },
-                        { title: "Solicitado por", field: "requested" },
-                        { title: "Fecha", field: "created_at", type: "datetime" },
-
-
+                        { title: "Registro", field: "created_at", type: "datetime" },
 
 
                     ]}
@@ -166,22 +125,6 @@ export default function Sistemas(props) {
                         },
 
                         {
-                            icon: TableIcons.AssignmentIndIcon,
-                            tooltip: 'Autorizar',
-                       
-                            onClick: (event, rowData) => {
-                                if(rowData.authorized==null){
-                                    setConfirmarMensaje(true)
-                                    setSelected3(rowData.id)
-                                }else{
-                                    alert('El pedido ya ha sido autorizado')
-                                }
-                                
-
-                            }
-                        },
-
-                        {
                             icon: TableIcons.Delete,
                             tooltip: "Borrar",
 
@@ -190,6 +133,13 @@ export default function Sistemas(props) {
                                 setOpen2(true)
                             }
                         },
+                        {
+                            icon: TableIcons.Filter,
+                            tooltip: 'Filtrar',
+                            isFreeAction: true,
+                            onClick: (event) => setOpenFilter(true)
+                          }
+
                     ]}
 
                     options={{

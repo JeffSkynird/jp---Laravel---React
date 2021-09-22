@@ -123,11 +123,11 @@ setImage(props.sistema.image)
                    {props.sistema!=null?"Formulario de edición de productos": "Formulario de creación de productos"}
                 </DialogContentText>
             
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
                     <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                      
                         label="Nombre"
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
@@ -136,7 +136,7 @@ setImage(props.sistema.image)
                     <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                    
                         label="Código JP"
                         value={jpcode}
                         onChange={(e) => setJpcode(e.target.value)}
@@ -151,7 +151,7 @@ setImage(props.sistema.image)
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                  
                         label="Código Proveedor"
                         value={supplierCode}
                         onChange={(e) => setSupplirCode(e.target.value)}
@@ -160,7 +160,7 @@ setImage(props.sistema.image)
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                  
                         label="Serie"
                         value={serie}
                         onChange={(e) => setSerie(e.target.value)}
@@ -168,7 +168,7 @@ setImage(props.sistema.image)
                     /></Grid>
                      <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
-                             size="small"
+                      
                             style={{ width: '100%'}}
                                 options={unityData}
                                 value={getName(unity)}
@@ -193,7 +193,7 @@ setImage(props.sistema.image)
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                      
                         label="Cantidad"
                         type="number"
                         value={stock}
@@ -203,7 +203,7 @@ setImage(props.sistema.image)
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+                   
                         type="number"
                         label="Cantidad mínima"
                         value={stockMin}
@@ -213,7 +213,7 @@ setImage(props.sistema.image)
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                        size="small"
+               
                         type="number"
                         label="Cantidad máxima"
                         value={stockMax}
@@ -224,7 +224,7 @@ setImage(props.sistema.image)
                         variant="outlined"
 
                         style={{ width:'100%' }}
-                   
+                                    
                         label="Descripción"
 
                         value={descripcion}

@@ -15,8 +15,6 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products');
-            $table->integer('quantity');
             $table->foreignId('supplier_id')->constrained('suppliers');
             $table->enum('status', ['I', 'P','E','A'])->default('I');
             $table->foreignId('authorized_by')->nullable()->constrained('users');
