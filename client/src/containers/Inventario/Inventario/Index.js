@@ -16,7 +16,7 @@ import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/sistemas.js';
+import { obtenerInventory } from '../../../utils/API/sistemas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
@@ -33,11 +33,11 @@ export default function Sistemas(props) {
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerTodos(setData, initializer)
+            obtenerInventory(setData, initializer)
         }
     }, [initializer.usuario])
     const carga = () => {
-        obtenerTodos(setData, initializer)
+        obtenerInventory(setData, initializer)
         setSelected(null)
         setSelected2(null)
     }
@@ -56,11 +56,9 @@ export default function Sistemas(props) {
 
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Productos
+                    Inventario
                 </Typography>
-                <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                        Nuevo
-                    </Button>
+               
             </Grid>
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
@@ -80,7 +78,36 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-               
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Productos stock mínimo
+                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant="h4" gutterBottom>
+                                {data.length}
+                            </Typography>
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(30, 136, 229)', borderRadius: 20 }} >
+                                <DesktopWindowsIcon />
+                            </Avatar>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Productos stock mínimo
+                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant="h4" gutterBottom>
+                                {data.length}
+                            </Typography>
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(216, 67, 21)', borderRadius: 20 }} >
+                                <DesktopWindowsIcon />
+                            </Avatar>
+                        </div>
+                    </CardContent>
+                </Card>
             </Grid>
       
             <Grid item xs={12}>
@@ -97,12 +124,12 @@ export default function Sistemas(props) {
                               />
                             ),
                           },
-                        
+                        { title: "Cod. (JP)", field: "jp_code" },
+                        { title: "Cod. (Provedor)", field: "supplier_code" },
+                        { title: "Serie", field: "serie" },
                         { title: "Nombre", field: "name" },
                         { title: "Medida", field: "unity" },
-                        { title: "Categoria", field: "category" },
 
-                        { title: "Stock", field: "stock" },
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -114,25 +141,7 @@ export default function Sistemas(props) {
                     localization={LocalizationTable}
 
                     actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
-
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-
-                        {
-                            icon: TableIcons.Delete,
-                            tooltip: "Borrar",
-
-                            onClick: (event, rowData) => {
-                                setSelected2(rowData)
-                                setOpen2(true)
-                            }
-                        },
+                     
                         {
                             icon: TableIcons.Filter,
                             tooltip: 'Filtrar',

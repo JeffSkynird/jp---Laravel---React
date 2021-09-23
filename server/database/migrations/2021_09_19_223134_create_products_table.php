@@ -16,9 +16,6 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('jp_code');
-            $table->string('supplier_code')->nullable();
-            $table->string('bar_code')->nullable();
-            $table->string('serie')->nullable();
             $table->string('name');
             $table->string('image')->nullable();
             $table->text('description')->nullable();
@@ -26,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->integer('min_stock')->nullable();
             $table->integer('max_stock')->nullable();
             $table->foreignId('unity_id')->constrained('unities');
+            $table->foreignId('category_id')->constrained('categories');
             $table->boolean('status')->default(1);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();

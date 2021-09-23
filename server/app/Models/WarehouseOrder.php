@@ -9,8 +9,8 @@ class WarehouseOrder extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'product_id',
-        'order_id',
-        'quantity'
+        'inventory_id',
+        'warehouse_id',
+        'order_id'
     ];
 }

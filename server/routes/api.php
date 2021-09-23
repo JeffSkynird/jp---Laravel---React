@@ -70,6 +70,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@show');
     Route::get('products', 'App\Http\Controllers\v1\Inventario\ProductController@index');
     Route::delete('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@delete');
+    Route::get('inventories', 'App\Http\Controllers\v1\Inventario\InventoryController@index');
 
     
     Route::post('suppliers', 'App\Http\Controllers\v1\Inventario\SupplierController@create');

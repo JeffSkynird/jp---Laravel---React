@@ -11,8 +11,6 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
 import { editarSistema, registrarSistema } from '../../../../utils/API/sistemas';
-import { obtenerTodos as obtenerCategorias } from '../../../../utils/API/categories';
-
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -28,9 +26,6 @@ export default function Crear(props) {
     const [serie, setSerie] = React.useState("")
     const [unity, setUnity] = React.useState("")
     const [unityData, setUnityData] = React.useState([])
-
-    const [category, setCategory] = React.useState("")
-    const [categoryData, setCategoryData] = React.useState([])
     const [image, setImage] = React.useState("")
 
     const [stock, setStock] = React.useState("")
@@ -40,8 +35,6 @@ export default function Crear(props) {
     const [descripcion, setDescripcion] = React.useState("")
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            
-            obtenerCategorias(setCategoryData,initializer)
 
         obtenerUnidades(setUnityData,initializer)
         }
@@ -53,7 +46,6 @@ export default function Crear(props) {
             setJpcode(props.sistema.jp_code)
             setSupplirCode(props.sistema.supplier_code)
             setUnity(props.sistema.unity_id)
-            setCategory(props.sistema.category_id)
 
             setSerie(props.sistema.serie)
 
@@ -67,11 +59,13 @@ setImage(props.sistema.image)
         }
     },[props.sistema])
     const guardar=()=>{
-        let data={
+        let data={ 'jp_code': jpcode,
+        'supplier_code': supplierCode,
+        'bar_code': '',
+        'serie': serie,
         'name': nombre,
-        'category_id':category,
         'description': descripcion,
-        'stock': 0,
+        'stock': stock,
         'min_stock': stockMin,
         'max_stock': stockMax,
         'unity_id': unity,
@@ -111,16 +105,6 @@ setImage(props.sistema.image)
         })
         return object
     }
-    const getName2 = (id) => {
-        let object = null
-        categoryData.map((e) => {
-            if (id == e.id) {
-                object = { ...e }
-            }
-        })
-        return object
-    }
-    
     return (
         <Dialog
             open={props.open}
@@ -149,30 +133,39 @@ setImage(props.sistema.image)
                         onChange={(e) => setNombre(e.target.value)}
 
                     /></Grid>
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
-                        <Autocomplete
-                      
-                            style={{ width: '100%'}}
-                                options={categoryData}
-                                value={getName2(category)}
-                                getOptionLabel={(option) => option.name}
-                                onChange={(event, value) => {
-                                    if (value != null) {
+                    <Grid item xs={12}>   <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                    
+                        label="Código JP"
+                        value={jpcode}
+                        onChange={(e) => setJpcode(e.target.value)}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="start">      <IconButton size="small" aria-label="delete">
+                            <AutorenewIcon />
+                          </IconButton></InputAdornment>,
+                          }}
+                    />
+            
+                    </Grid>
+                      <Grid item xs={12}>   <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                  
+                        label="Código Proveedor"
+                        value={supplierCode}
+                        onChange={(e) => setSupplirCode(e.target.value)}
 
-                                        setCategory(value.id)
-                                    } else {
+                    /></Grid>
+                      <Grid item xs={12}>   <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                  
+                        label="Serie"
+                        value={serie}
+                        onChange={(e) => setSerie(e.target.value)}
 
-                                        setCategory('')
-
-                                    }
-
-                                }} // prints the selected value
-                                renderInput={params => (
-                                    <TextField {...params} label="Seleccione una categoria" variant="outlined" fullWidth />
-                                )}
-                            />
-                           
-                        </Grid>
+                    /></Grid>
                      <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
                       
@@ -197,7 +190,16 @@ setImage(props.sistema.image)
                             />
                            
                         </Grid>
-                   
+                      <Grid item xs={12}>   <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                      
+                        label="Cantidad"
+                        type="number"
+                        value={stock}
+                        onChange={(e) => setStock(e.target.value)}
+
+                    /></Grid>
                       <Grid item xs={12}>   <TextField
                         variant="outlined"
                         style={{ width:'100%' }}

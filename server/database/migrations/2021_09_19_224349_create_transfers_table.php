@@ -15,8 +15,7 @@ class CreateTransfersTable extends Migration
     {
         Schema::create('transfers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products');
-            $table->integer('quantity');
+            $table->foreignId('inventory_id')->constrained('inventories');
             $table->foreignId('warehouse_origin')->constrained('warehouses');
             $table->foreignId('warehouse_destination')->constrained('warehouses');
             $table->enum('status', ['A', 'P','C'])->default('P');

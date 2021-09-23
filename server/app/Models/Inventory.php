@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transfer extends Model
+class Inventory extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'inventory_id',
-        'warehouse_origin',
-        'warehouse_destination',
-        'status',
-        'ip',
-        'terminal',
-        'user_id'
+        'product_id',
+        'supplier_code',
+        'jp_code',
+        'bar_code',
+        'serie',
     ];
 }

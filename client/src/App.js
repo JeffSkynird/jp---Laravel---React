@@ -39,7 +39,7 @@ import Pedidos from './containers/Inventario/Pedidos/Index';
 import Productos from './containers/Inventario/Productos/Index';
 import Bodegas from './containers/Inventario/Bodegas/Index';
 import Proveedores from './containers/Inventario/Proveedores/Index';
-
+import Inventario from './containers/Inventario/Inventario/Index';
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -177,7 +177,9 @@ export default function App(props) {
                   <Route exact path="/inventario/productos" component={Productos} />
                   <Route exact path="/inventario/bodegas" component={Bodegas} />
                   <Route exact path="/inventario/proveedores" component={Proveedores} />
+                  <Route exact path="/inventario/inventario" component={Inventario} />
 
+                  
                   <Route render={() => <Redirect to="/panel" />} />
                   
                 </Switch>

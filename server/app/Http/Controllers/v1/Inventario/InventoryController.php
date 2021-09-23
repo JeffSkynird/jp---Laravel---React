@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inventory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class InventoryController extends Controller
 {
     public function index()
     {
         try {
   
-            $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-    ->select('products.*','unities.name as unity','categories.name as category')->get();
+            $data = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
+            ->join('unities', 'products.unity_id', '=', 'unities.id')
+        ->select('products.*','unities.name as unity','inventories.*')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -32,8 +33,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         try {
-            $request['jp_code']="N/A";
-            Product::create($request->all());
+            Inventory::create($request->all());
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',
@@ -49,7 +49,7 @@ class ProductController extends Controller
     }
     public function show($id)
     {
-        $data = Product::find($id);
+        $data = Inventory::find($id);
         return response()->json([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
@@ -59,7 +59,7 @@ class ProductController extends Controller
     }
     public function update(Request $request,$id){
         try {
-            $co = Product::find($id);
+            $co = Inventory::find($id);
             $co->update($request->all());
             return response()->json([
                 "status" => "200",
@@ -77,7 +77,7 @@ class ProductController extends Controller
   
     public function delete($id)
     {
-        $data = Product::find($id);
+        $data = Inventory::find($id);
         $data->delete();
         return response()->json([
             "status" => "200",
@@ -85,5 +85,4 @@ class ProductController extends Controller
             "type" => 'success'
         ]);
     }
- 
 }

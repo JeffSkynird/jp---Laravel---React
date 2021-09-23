@@ -246,6 +246,12 @@ function ResponsiveDrawer(props) {
 
                     <Collapse in={openCollapse} timeout="auto" unmountOnExit>
                         <List  component="div" disablePadding >
+                        <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/inventario')} >
+                                <ListItemIcon>
+                                    <PostAddIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Inventario" />
+                            </ListItem>
                             <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/pedidos')} >
                                 <ListItemIcon>
                                     <AllInboxIcon />

@@ -22,6 +22,7 @@ class Product extends Model
         'max_stock',
         'unity_id',
         'status',
+        'category_id',
         'ip',
         'terminal',
         'user_id'
