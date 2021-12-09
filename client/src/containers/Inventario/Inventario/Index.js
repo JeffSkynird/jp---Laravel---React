@@ -20,9 +20,12 @@ import { obtenerInventory } from '../../../utils/API/sistemas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
-
+import { PUBLIC_PATH } from '../../../config/API';
+import Confirmar from '../../../components/Confirmar'
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
+    const [imageSelected, setImageSelected] = React.useState(null)
+    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
@@ -50,6 +53,13 @@ export default function Sistemas(props) {
     }
     return (
         <Grid container spacing={2}>
+            <Confirmar ancho={true} body={<img
+                style={{ height: '100%', width: '100%' }}
+                src={PUBLIC_PATH+"storage/" + imageSelected}
+            />} open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={() => {
+                setImageSelected(null)
+                setConfirmarMensaje(false)
+            }} titulo='Foto del producto' />
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
             <Filtro setOpen={setOpenFilter} open={openFilter}  />
@@ -118,10 +128,14 @@ export default function Sistemas(props) {
                             title: 'Imágen',
                             field: 'avatar',
                             render: rowData => (
-                              <img
-                                style={{ height: 36, borderRadius: '50%' }}
-                                src={rowData.image}
-                              />
+                                <img
+                                    onClick={() =>{
+                                        setConfirmarMensaje(true)
+                                        setImageSelected(rowData.image)
+                                    }}
+                                    style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
+                                    src={PUBLIC_PATH+"storage/" + rowData.image}
+                                />
                             ),
                           },
                         { title: "Cod. (JP)", field: "jp_code" },

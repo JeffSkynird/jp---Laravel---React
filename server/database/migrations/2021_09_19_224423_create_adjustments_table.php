@@ -16,11 +16,9 @@ class CreateAdjustmentsTable extends Migration
         Schema::create('adjustments', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['I', 'E']);
-
-            $table->foreignId('inventory_id')->constrained('inventories');
- 
-            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
+            $table->foreignId('product_id')->constrained('products');
             $table->foreignId('reason_id')->constrained('reasons');
+            $table->double('quantity', 8, 3);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');

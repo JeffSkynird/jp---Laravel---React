@@ -36,7 +36,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 export const TableIcons = {
     
     RefreshIcon: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Add: forwardRef((props, ref) => <AddBox  {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),

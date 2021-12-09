@@ -16,11 +16,14 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('jp_code');
+            $table->string('bar_code');
             $table->string('name');
             $table->string('image')->nullable();
             $table->text('description')->nullable();
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
             $table->text('stock');
             $table->integer('min_stock')->nullable();
+            $table->double('price', 15, 8)->default(0);
             $table->integer('max_stock')->nullable();
             $table->foreignId('unity_id')->constrained('unities');
             $table->foreignId('category_id')->constrained('categories');

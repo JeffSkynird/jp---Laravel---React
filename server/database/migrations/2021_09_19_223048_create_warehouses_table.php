@@ -17,10 +17,13 @@ class CreateWarehousesTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->integer('is_own')->default(0);
             $table->foreignId('zone_id')->constrained('zones');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');
+     
+            $table->foreignId('supplier_id')->nullable()->constrained('suppliers');
             $table->timestamps();
             $table->softDeletes();
         });

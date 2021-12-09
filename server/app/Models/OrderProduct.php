@@ -11,6 +11,8 @@ class OrderProduct extends Model
     protected $fillable = [
         'product_id',
         'quantity',
-        'order_id'
+        'order_id',
+        'price',
+        'subtotal'
     ];
 }

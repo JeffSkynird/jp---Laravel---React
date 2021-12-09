@@ -18,6 +18,7 @@ export default function Crear(props) {
     return (
         <Dialog
             open={props.open}
+            fullWidth={props.ancho}
             TransitionComponent={Transition}
             keepMounted
             onClose={() => props.setOpen(false)}
@@ -29,13 +30,14 @@ export default function Crear(props) {
                 <DialogContentText id="alert-dialog-slide-description">
                     {props.titulo}
                 </DialogContentText>
+                {props.body}
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => props.setOpen(false)} color="default">
                     Cancelar
                 </Button>
                 <Button color="primary" onClick={guardar}>
-                    Eliminar
+                    Aceptar
                 </Button>
             </DialogActions>
         </Dialog>

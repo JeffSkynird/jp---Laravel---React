@@ -10,9 +10,10 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
-import { editar as editarProveedor, registrar as registrarProveedor} from '../../../../utils/API/proveedores';
+import { editar as editarProveedor, registrar as registrarProveedor, subirFoto} from '../../../../utils/API/proveedores';
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -22,7 +23,7 @@ export default function Crear(props) {
 
     const [nombre, setNombre] = React.useState("")
     const [ruc, setRuc] = React.useState("")
-    const [logo, setLogo] = React.useState("")
+    const [logo, setLogo] = React.useState(null)
     const [celular, setCelular] = React.useState("")
     const [correo, setCorreo] = React.useState("")
   
@@ -30,15 +31,24 @@ export default function Crear(props) {
         if(props.sistema!=null){
             setNombre(props.sistema.business_name)
             setRuc(props.sistema.ruc)
-            setLogo(props.sistema.logo)
             setCelular(props.sistema.cellphone)
 
             setCorreo(props.sistema.email)
 
         }
     },[props.sistema])
+    const subir=()=>{
+        if(props.sistema!=null){
+          if(logo!=null){
+            subirFoto(props.sistema.id,{url:logo},initializer,  props.carga)
+
+          }
+
+        }
+    }
     const guardar=()=>{
         let data={ 
+            'url':logo,
         'business_name': nombre,
         'ruc': ruc,
         'cellphone': celular,
@@ -47,18 +57,23 @@ export default function Crear(props) {
         if(props.sistema==null){
             registrarProveedor(data,initializer)
             limpiar()
+            props.carga()
         }else{
             editarProveedor(props.sistema.id,data,initializer)
             limpiar()
+            subir()
+            if(logo==null){
+                props.carga()
+            }
 
         }
         props.setOpen(false)
-        props.carga()
+      
     }
     const limpiar=()=>{
         setNombre('')
         setRuc("")
-        setLogo("")
+        setLogo(null)
         setCelular("")
 
         setCorreo("")
@@ -78,10 +93,10 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="alert-dialog-slide-title">Proveedores</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Clientes</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                   {props.sistema!=null?"Formulario de edición de proveedores": "Formulario de creación de proveedores"}
+                   {props.sistema!=null?"Formulario de edición de clientes": "Formulario de creación de clientes"}
                 </DialogContentText>
             
                 <Grid container spacing={2}>
@@ -123,10 +138,36 @@ export default function Crear(props) {
                         onChange={(e) => setCorreo(e.target.value)}
 
                     /></Grid>
-                    
+                 
+  <Grid item md={12} xs={12}>
+                    <input
+                      accept="image/*"
+                      style={{ display: "none", marginRight: "5px" }}
+                      id="templateFile"
+                      multiple
+                      type="file"
+                  
+                      onChange={(e) => {
+                          setLogo(e.target.files[0])
+                      }}
+                    />
+                    <label htmlFor="templateFile">
+                      <Button
+                              startIcon={<CloudUploadIcon />}
+                        variant="outlined"
+                        color="default"
+                        component="span"
+                      >
+                        Subir foto{" "}
+                        {logo != null
+                          ? "(" + logo.name + ")"
+                          : ""}
+                      </Button>
+                    </label>
+                  </Grid>
+                  </Grid>
 
 
-                </Grid>
 
             </DialogContent>
             <DialogActions>

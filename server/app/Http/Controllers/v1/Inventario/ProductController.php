@@ -5,16 +5,28 @@ namespace App\Http\Controllers\v1\Inventario;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use File;
 class ProductController extends Controller
 {
+    public function save($file)
+    {
+        if($file!=null){
+            $extension = $file->getClientOriginalExtension(); // getting image extension
+            $filename =time().'.'.$extension;
+            $file->storeAs('public/photos', $filename);
+            return  'photos/'.$filename;
+        }else{
+            return null;
+        }
+
+    }
     public function index()
     {
         try {
   
             $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
-    ->select('products.*','unities.name as unity','categories.name as category')->get();
+    ->select('products.*','unities.name as unity','categories.name as category')->orderBy('id','desc')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -32,8 +44,12 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         try {
+            $url = $this->save($request->file('url'));
             $request['jp_code']="N/A";
+            $request['image']=$url;
+
             Product::create($request->all());
+
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',
@@ -47,6 +63,67 @@ class ProductController extends Controller
             ]);
         }
     }
+    public function showByWarehouse($id)
+    {
+        try {
+            $data = Product::where('warehouse_id','=',$id)->where('stock','>','0')->orderBy('id','desc')->get();
+            return response()->json([
+                "status" => "200",
+                'data'=>$data,
+                "message" => 'Data obtenida con éxito',
+                "type" => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "500",
+                "message" => $e->getMessage(),
+                "type" => 'error'
+            ]);
+        }
+    }
+    public function showByClient($id)
+    {
+        try {
+            $data = Product::join('warehouses', 'products.warehouse_id', '=', 'warehouses.id')
+            ->join('suppliers','warehouses.supplier_id','=','suppliers.id')
+            ->where('suppliers.id','=',$id)
+            ->select('products.*')->orderBy('id','desc')->get();
+            return response()->json([
+                "status" => "200",
+                'data'=>$data,
+                "message" => 'Data obtenida con éxito',
+                "type" => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "500",
+                "message" => $e->getMessage(),
+                "type" => 'error'
+            ]);
+        }
+    }
+    public function showByOwn()
+    {
+        try {
+            $data = Product::join('warehouses', 'products.warehouse_id', '=', 'warehouses.id')
+          
+            ->where('warehouses.supplier_id','=',null)
+            ->select('products.*')->orderBy('id','desc')->get();
+            return response()->json([
+                "status" => "200",
+                'data'=>$data,
+                "message" => 'Data obtenida con éxito',
+                "type" => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "500",
+                "message" => $e->getMessage(),
+                "type" => 'error'
+            ]);
+        }
+    }
+
     public function show($id)
     {
         $data = Product::find($id);
@@ -57,8 +134,27 @@ class ProductController extends Controller
             "type" => 'success'
         ]);
     }
+    public function deleteImage($file_path)
+    {
+        if($file_path!=null){
+            File::delete(public_path() . '/storage/'.$file_path);
+        
+        }
+    }
+
+    public function subirFoto(Request $request,$id){
+        $url = $this->save($request->file('url'));
+        $pr = Product::find($id);
+        if($request->file('url')!=null){
+            $this->deleteImage($pr->image);
+        }
+        $pr->image=$url;
+        $pr->save();
+    }
     public function update(Request $request,$id){
         try {
+
+        
             $co = Product::find($id);
             $co->update($request->all());
             return response()->json([

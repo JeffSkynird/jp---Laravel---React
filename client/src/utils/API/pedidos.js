@@ -133,7 +133,40 @@ export const registrar = (data,store) => {
       });
   }
 
+  export const guardarAlmacen = (data,store) => {
+    const { usuario, mostrarNotificacion, mostrarLoader } = store;
+    
+    let url = ENTRYPOINT+"transfers";
+    let setting = {
+      method: "POST",
+      url: url,
+      data: data,
+      body: data,
+      headers: { Accept: "application/json",
+      Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+    };
+    mostrarLoader(true);
   
+    axios(setting)
+      .then((res) => {
+        let response = res.data;
+        if (response.type != "error") {
+         
+          mostrarLoader(false);
+          mostrarNotificacion({ type: "success", message: response.message });
+        } else {
+          mostrarNotificacion({ type: "error", message: response.message });
+          mostrarLoader(false);
+        }
+      })
+      .catch((error) => {
+        mostrarLoader(false);
+  
+        mostrarNotificacion({ type: "error", message: error.message });
+      });
+  }
+
+   
   export const obtenerDetalleOrden = (order,setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
@@ -195,6 +228,106 @@ export const obtenerTodos = (setData,store) => {
 
 
     });
+}
+
+export const obtenerInventarioOrden = (id,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"order_inventory/"+id
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+     let d=[]
+     response.data.map((e,i)=>{
+      d.push({...e,numero:(i+1)})
+     })
+      setData(d)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   console.log(error)
+
+
+  });
+}
+export const cambiarEstado = (data,store) => {
+  const { usuario, mostrarNotificacion, mostrarLoader } = store;
+  
+  let url = ENTRYPOINT+"change_order_status";
+  let setting = {
+    method: "POST",
+    url: url,
+    data: data,
+    body: data,
+    headers: { Accept: "application/json",
+    Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+  };
+  mostrarLoader(true);
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data;
+      if (response.type != "error") {
+       
+        mostrarLoader(false);
+        mostrarNotificacion({ type: "success", message: response.message });
+      } else {
+        mostrarNotificacion({ type: "error", message: response.message });
+        mostrarLoader(false);
+      }
+    })
+    .catch((error) => {
+      mostrarLoader(false);
+
+      mostrarNotificacion({ type: "error", message: error.message });
+    });
+}
+
+export const obtenerStatusOrden = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"orders_status"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
 }
 export const obtenerSistemaEvaluaciones = (setLabels,setValues,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;

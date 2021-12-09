@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInventoriesTable extends Migration
+class CreateSolicitudeProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateInventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventories', function (Blueprint $table) {
+        Schema::create('solicitude_products', function (Blueprint $table) {
             $table->id();
-            $table->string('supplier_code')->nullable();
-            $table->string('jp_code');
-            $table->string('bar_code')->nullable();
-            $table->string('serie')->nullable();
             $table->foreignId('product_id')->constrained('products');
+            $table->foreignId('solicitude_id')->constrained('solicitudes');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateInventoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inventories');
+        Schema::dropIfExists('solicitude_products');
     }
 }

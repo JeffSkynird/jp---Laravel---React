@@ -15,7 +15,7 @@ class CreateWarehouseProductsTable extends Migration
     {
         Schema::create('warehouse_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventory_id')->constrained('inventories');
+            $table->foreignId('product_id')->constrained('products');
             $table->foreignId('warehouse_id')->constrained('warehouses');
             $table->timestamps();
         });

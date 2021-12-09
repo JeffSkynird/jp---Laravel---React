@@ -15,11 +15,14 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained('suppliers');
+            $table->foreignId('supplier_id')->nullable()->constrained('suppliers');
+            $table->enum('type', ['P', 'C'])->default('P');
             $table->enum('status', ['I', 'P','E','A'])->default('I');
             $table->foreignId('authorized_by')->nullable()->constrained('users');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('requested_by')->nullable()->constrained('users');
+            $table->double('subtotal', 15, 2)->default(0);
+            $table->double('total', 15, 2)->default(0);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->timestamps();

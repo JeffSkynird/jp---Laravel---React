@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 class UsuarioController extends Controller
 {
+    public function index(){
+        $usuarios = User::all();
+        return json_encode([
+            "status" => "200",
+            "data"=> $usuarios,
+            "message" => 'Listado exitoso',
+            "type" => 'success'
+        ]);
+    }
     public function create(UserRequest $request)
     {
         try {

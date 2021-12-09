@@ -11,11 +11,11 @@ class Adjustment extends Model
     use HasFactory,SoftDeletes;
     protected $fillable = [
         'status',
-        'inventory_id',
+        'product_id',
         'warehouse_id',
         'reason_id',
         'ip',
         'terminal',
-        'user_id'
+        'user_id','quantity'
     ];
 }

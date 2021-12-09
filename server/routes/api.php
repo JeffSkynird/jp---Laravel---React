@@ -52,6 +52,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('zones/{id}', 'App\Http\Controllers\v1\Ubicacion\ZoneController@show');
     Route::get('zones', 'App\Http\Controllers\v1\Ubicacion\ZoneController@index');
     Route::delete('zones/{id}', 'App\Http\Controllers\v1\Ubicacion\ZoneController@delete');
+    
+    Route::get('warehouses/inventory/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@showProducts');
 
     Route::post('warehouses', 'App\Http\Controllers\v1\Inventario\WarehouseController@create');
     Route::put('warehouses/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@update');
@@ -64,15 +66,17 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@show');
     Route::get('unities', 'App\Http\Controllers\v1\Inventario\UnityController@index');
     Route::delete('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@delete');
-
     Route::post('products', 'App\Http\Controllers\v1\Inventario\ProductController@create');
+
+    Route::post('products/upload_image/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@subirFoto');
     Route::put('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@update');
     Route::get('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@show');
     Route::get('products', 'App\Http\Controllers\v1\Inventario\ProductController@index');
     Route::delete('products/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@delete');
     Route::get('inventories', 'App\Http\Controllers\v1\Inventario\InventoryController@index');
 
-    
+    Route::post('suppliers/upload_image/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@subirFoto');
+
     Route::post('suppliers', 'App\Http\Controllers\v1\Inventario\SupplierController@create');
     Route::put('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@update');
     Route::get('suppliers/{id}', 'App\Http\Controllers\v1\Inventario\SupplierController@show');
@@ -82,6 +86,13 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@show');
     Route::get('orders', 'App\Http\Controllers\v1\Inventario\OrderController@index');
     Route::delete('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@delete');
+    
+    Route::post('change_order_status', 'App\Http\Controllers\v1\Inventario\OrderController@storeInventory');
+    Route::get('order_inventory/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@viewOrderInventory');
+    Route::post('order/warehouse/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@distribuirPedido');
+
+    
+    Route::get('orders_status', 'App\Http\Controllers\v1\Inventario\OrderController@viewStatusOrder');
 
     Route::get('order_detail/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@obtenerDetallePedido');
 
@@ -109,14 +120,34 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('transfers', 'App\Http\Controllers\v1\Inventario\TransferController@index');
     Route::delete('transfers/{id}', 'App\Http\Controllers\v1\Inventario\TransferController@delete');
 
-    Route::post('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@create');
-    Route::put('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@update');
-    Route::get('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@show');
-    Route::get('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@index');
-    Route::delete('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@delete');
 
+
+    Route::post('tasks', 'App\Http\Controllers\v1\Inventario\TaskController@create');
+    Route::put('tasks/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@update');
+    Route::get('tasks/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@show');
+    Route::get('tasks', 'App\Http\Controllers\v1\Inventario\TaskController@index');
+    Route::delete('tasks/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@delete');
+
+    Route::get('sub_tasks/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@subtasks');
+    Route::get('solicitudes/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@solicitudes');
+    
+    Route::get('solicitudes', 'App\Http\Controllers\v1\Inventario\SolicitudeController@index');
+    Route::post('solicitudes/authorize/{id}', 'App\Http\Controllers\v1\Inventario\SolicitudeController@autorization');
+    Route::get('products_by_warehouse/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@showByWarehouse');
+    Route::get('products_by_client/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@showByClient');
+    Route::get('products_own', 'App\Http\Controllers\v1\Inventario\ProductController@showByOwn');
+    Route::get('voucher', 'App\Http\Controllers\v1\Reporte\VoucherController@reporte');
+
+    Route::put('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@updateAuth');
+    Route::get('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@showAuth');
+    Route::post('users', 'App\Http\Controllers\v1\Seguridad\UsuarioController@create');
+    Route::put('users/{id}', 'App\Http\Controllers\v1\Seguridad\UsuarioController@update');
+    Route::get('users', 'App\Http\Controllers\v1\Seguridad\UsuarioController@index');
+    Route::get('users/{id}', 'App\Http\Controllers\v1\Seguridad\UsuarioController@show');
+    Route::delete('users/{id}', 'App\Http\Controllers\v1\Seguridad\UsuarioController@delete'); 
     Route::middleware('auth:api')->group(function () {
-        
+      
+
         Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');
         Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
 
@@ -125,6 +156,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('user', 'App\Http\Controllers\v1\Seguridad\UsuarioController@showAuth');
   
         
+    Route::post('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@create');
+    Route::put('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@update');
+    Route::get('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@show');
+    Route::get('adjustments', 'App\Http\Controllers\v1\Inventario\AdjustmentController@index');
+    Route::delete('adjustments/{id}', 'App\Http\Controllers\v1\Inventario\AdjustmentController@delete');
     });
    
 });

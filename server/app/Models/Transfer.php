@@ -9,7 +9,7 @@ class Transfer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'inventory_id',
+        'product_id',
         'warehouse_origin',
         'warehouse_destination',
         'status',

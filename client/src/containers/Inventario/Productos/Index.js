@@ -20,15 +20,19 @@ import { obtenerTodos } from '../../../utils/API/sistemas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
-
+import { PUBLIC_PATH } from '../../../config/API';
+import Confirmar from '../../../components/Confirmar'
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
+    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
+    const [imageSelected, setImageSelected] = React.useState(null)
+
     const [openFilter, setOpenFilter] = React.useState(false)
 
     React.useEffect(() => {
@@ -41,31 +45,40 @@ export default function Sistemas(props) {
         setSelected(null)
         setSelected2(null)
     }
-    const total=()=>{
-        let tot=0
-        data.map((e)=>{
-            tot+=e.evaluaciones
+    const total = () => {
+        let tot = 0
+        data.map((e) => {
+            tot += e.evaluaciones
         })
         return tot
     }
     return (
         <Grid container spacing={2}>
+
+            <Confirmar ancho={true} body={<img
+                style={{ height: '100%', width: '100%' }}
+                src={PUBLIC_PATH+"storage/" + imageSelected}
+            />} open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={() => {
+                setImageSelected(null)
+                setConfirmarMensaje(false)
+            }} titulo='Foto del producto' />
+
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Filtro setOpen={setOpenFilter} open={openFilter}  />
+            <Filtro setOpen={setOpenFilter} open={openFilter} />
 
-            <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
+            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h5" >
                     Productos
                 </Typography>
                 <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                        Nuevo
-                    </Button>
+                    Nuevo
+                </Button>
             </Grid>
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.12)', borderWidth: 1, borderStyle: 'solid' }} elevation={0}>
                     <CardContent>
                         <Typography variant="subtitle1" gutterBottom>
                             Totales
@@ -80,9 +93,9 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-               
+
             </Grid>
-      
+
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}
@@ -91,18 +104,22 @@ export default function Sistemas(props) {
                             title: 'Imágen',
                             field: 'avatar',
                             render: rowData => (
-                              <img
-                                style={{ height: 36, borderRadius: '50%' }}
-                                src={rowData.image}
-                              />
+                                <img
+                                    onClick={() =>{
+                                        setConfirmarMensaje(true)
+                                        setImageSelected(rowData.image)
+                                    }}
+                                    style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
+                                    src={PUBLIC_PATH+"storage/" + rowData.image}
+                                />
                             ),
-                          },
-                        
+                        },
+
                         { title: "Nombre", field: "name" },
                         { title: "Medida", field: "unity" },
                         { title: "Categoria", field: "category" },
-
                         { title: "Stock", field: "stock" },
+
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -138,15 +155,15 @@ export default function Sistemas(props) {
                             tooltip: 'Filtrar',
                             isFreeAction: true,
                             onClick: (event) => setOpenFilter(true)
-                          }
+                        }
 
                     ]}
 
                     options={{
-                        pageSize:10,
+                        pageSize: 10,
                         showTitle: false,
                         actionsColumnIndex: -1,
-                      
+
                         maxBodyHeight: 350,
                         padding: 'dense',
                         headerStyle: {

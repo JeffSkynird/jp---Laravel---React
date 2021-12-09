@@ -11,7 +11,6 @@ class Product extends Model
     use HasFactory,SoftDeletes;
     protected $fillable = [
         'jp_code',
-        'supplier_code',
         'bar_code',
         'serie',
         'name',
@@ -19,12 +18,14 @@ class Product extends Model
         'description',
         'stock',
         'min_stock',
+        'price',
         'max_stock',
         'unity_id',
         'status',
         'category_id',
         'ip',
         'terminal',
-        'user_id'
+        'user_id',
+        'warehouse_id'
     ];
 }

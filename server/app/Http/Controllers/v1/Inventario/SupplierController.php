@@ -5,14 +5,35 @@ namespace App\Http\Controllers\v1\Inventario;
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
+use File;
 class SupplierController extends Controller
 {
+    public function save($file)
+    {
+        if($file!=null){
+            $extension = $file->getClientOriginalExtension(); // getting image extension
+            $filename =time().'.'.$extension;
+            $file->storeAs('public/proveedores', $filename);
+            return  'proveedores/'.$filename;
+        }else{
+            return null;
+        }
+
+    }
+    public function deleteImage($file_path)
+    {
+        if($file_path!=null){
+            File::delete(public_path() . '/storage/'.$file_path);
+        
+        }
+    }
+
     public function index()
     {
         try {
             $data = Supplier::leftjoin('orders', 'orders.supplier_id', '=', 'suppliers.id')
-            ->selectRaw('suppliers.*,count(orders.*) as products')->groupBy('suppliers.id')->get();
+            ->selectRaw('suppliers.*,count(orders.*) as products')->groupBy('suppliers.id')->orderBy('id','desc')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -27,9 +48,20 @@ class SupplierController extends Controller
             ]);
         }
     }
+    public function subirFoto(Request $request,$id){
+        $url = $this->save($request->file('url'));
+        $pr = Supplier::find($id);
+        if($request->file('url')!=null){
+            $this->deleteImage($pr->logo);
+        }
+        $pr->logo=$url;
+        $pr->save();
+    }
     public function create(Request $request)
     {
         try {
+            $url = $this->save($request->file('url'));
+            $request['logo']=$url;
             Supplier::create($request->all());
             return response()->json([
                 "status" => "200",
@@ -57,6 +89,9 @@ class SupplierController extends Controller
     public function update(Request $request,$id){
         try {
             $co = Supplier::find($id);
+
+           
+
             $co->update($request->all());
             return response()->json([
                 "status" => "200",

@@ -92,7 +92,9 @@ export default function Sistemas(props) {
                         { title: "Descripción", field: "description" },
                         { title: "Zona", field: "zone" },
                         { title: "Productos", field: "products" },
+                        { title: "Propia", field: "is_own", render: rowData => <div>{rowData.is_own==1 ? 'Si' : 'No'}</div> },
 
+                        {title:"Cliente",field:"supplier",render:rowData=><span>{rowData.supplier!=null?rowData.supplier:"N/A"}</span>},
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -107,15 +109,6 @@ export default function Sistemas(props) {
                         {
                             icon: TableIcons.Edit,
                             tooltip: 'Editar',
-
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-                        {
-                            icon: TableIcons.Add,
-                            tooltip: 'Añadir productos',
 
                             onClick: (event, rowData) => {
                                 setSelected(rowData)

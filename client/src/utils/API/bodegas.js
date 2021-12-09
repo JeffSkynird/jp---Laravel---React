@@ -100,6 +100,38 @@ export const registrar = (data,store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   }
+  
+  export const obtenerInventario = (id,setData,store) => {
+    const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+ 
+  let url = ENTRYPOINT+"warehouses/inventory/"+id
+  let setting = {
+    method: "Get",
+    url: url,
+    headers: { 'Accept': 'application/json',
+    Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+  };
+
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data
+     if(response.type!="error"){
+        setData(response.data)
+     
+
+     }else{
+     
+     }
+    })
+    .catch((error) => {
+     
+
+
+    });
+}
 export const obtenerTodos = (setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 

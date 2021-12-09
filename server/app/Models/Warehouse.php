@@ -15,6 +15,8 @@ class Warehouse extends Model
         'zone_id',
         'ip',
         'terminal',
-        'user_id'
+        'is_own',
+        'user_id',
+        'supplier_id'
     ];
 }

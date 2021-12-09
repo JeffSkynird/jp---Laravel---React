@@ -68,15 +68,48 @@ export const eliminar = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
+  
+export const subirFoto = (id,data,store,carga) => {
+  const { usuario, mostrarNotificacion, mostrarLoader } = store;
+  var resp = new FormData()
+for ( var key in data ) {
+  resp.append(key, data[key]);
+}
+  let url = ENTRYPOINT+"suppliers/upload_image/"+id;
+  let setting = {
+    method: "POST",
+    url: url,
+    data: resp,
+    body: resp,
+    headers: { Accept: "application/json",
+    Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+  };
+  mostrarLoader(true);
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data;
+      if (response.type != "error") {
+        carga()
+      } else {
+      }
+    })
+    .catch((error) => {
+
+    });
+}
 export const registrar = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
-    
+    var resp = new FormData()
+    for ( var key in data ) {
+      resp.append(key, data[key]);
+    }
     let url = ENTRYPOINT+"suppliers";
     let setting = {
       method: "POST",
       url: url,
-      data: data,
-      body: data,
+      data: resp,
+      body: resp,
       headers: { Accept: "application/json",
       Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
     };

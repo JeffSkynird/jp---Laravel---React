@@ -15,8 +15,8 @@ class CreateWarehouseOrdersTable extends Migration
     {
         Schema::create('warehouse_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('warehouse_id')->constrained('warehouses');
-            $table->foreignId('inventory_id')->constrained('inventories');
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
+            $table->foreignId('product_id')->constrained('products');
             $table->foreignId('order_id')->constrained('orders');
             $table->timestamps();
         });

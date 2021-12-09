@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Transfer;
+use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 
 class TransferController extends Controller
@@ -11,7 +13,11 @@ class TransferController extends Controller
     public function index()
     {
         try {
-            $data = Transfer::all();
+            $data = Transfer::
+           join('products as p', 'transfers.product_id', '=', 'p.id')
+            ->join('warehouses as w1', 'transfers.warehouse_origin', '=', 'w1.id')
+            ->join('warehouses as w2', 'transfers.warehouse_destination', '=', 'w2.id')
+            ->selectRaw('p.image,p.bar_code,p.name,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -28,8 +34,23 @@ class TransferController extends Controller
     }
     public function create(Request $request)
     {
+
+        $data = $request->input('data');
         try {
-            Transfer::create($request->all());
+            foreach ($data as $val) {
+                $pro = Product::find($val['product_id']);
+                $pro->warehouse_id = $val['warehouse_id'];
+                $pro->save();
+                Transfer::create([
+                    'product_id'=>$val['product_id'],
+                    'warehouse_origin'=>$val['warehouse_idO'],
+                    'warehouse_destination'=>$val['warehouse_id'],
+                    'user_id'=>1
+
+                ]);
+            }
+
+           
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',

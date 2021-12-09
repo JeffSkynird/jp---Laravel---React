@@ -1,6 +1,39 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
+
+
+export const subirFoto = (id,data,store,carga) => {
+  const { usuario, mostrarNotificacion, mostrarLoader } = store;
+  var resp = new FormData()
+for ( var key in data ) {
+  resp.append(key, data[key]);
+}
+  let url = ENTRYPOINT+"products/upload_image/"+id;
+  let setting = {
+    method: "POST",
+    url: url,
+    data: resp,
+    body: resp,
+    headers: { Accept: "application/json",
+    Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+  };
+  mostrarLoader(true);
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data;
+      if (response.type != "error") {
+       carga()
+      } else {
+      }
+    })
+    .catch((error) => {
+
+    });
+}
+
+
 export const editarSistema = (id,data, store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
@@ -70,13 +103,16 @@ export const eliminarSistema = (id,store) => {
   };
 export const registrarSistema = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
-    
+    var resp = new FormData()
+    for ( var key in data ) {
+      resp.append(key, data[key]);
+    }
     let url = ENTRYPOINT+"products";
     let setting = {
       method: "POST",
       url: url,
-      data: data,
-      body: data,
+      data: resp,
+      body: resp,
       headers: { Accept: "application/json",
       Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
     };
@@ -185,6 +221,100 @@ axios(setting)
       setLabels(response.data.system)
       setValues(response.data.count)
 
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+
+export const obtenerPorBodega = (id,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"products_by_warehouse/"+id
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+export const obtenerPorCliente = (id,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"products_by_client/"+id
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+export const obtenerPropios = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"products_own"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
 
    }else{
    

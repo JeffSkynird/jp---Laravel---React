@@ -35,11 +35,17 @@ import Settings from './containers/panel/Settings';
  */
 
 import Panel from './containers/panel/Panel';
+import Compras from './containers/Inventario/Compras/Index';
 import Pedidos from './containers/Inventario/Pedidos/Index';
+import Tareas from './containers/Inventario/Tareas/Index';
+
 import Productos from './containers/Inventario/Productos/Index';
 import Bodegas from './containers/Inventario/Bodegas/Index';
 import Proveedores from './containers/Inventario/Proveedores/Index';
 import Inventario from './containers/Inventario/Inventario/Index';
+import Transferencias from './containers/Inventario/Transferencias/Index';
+import Usuarios from './containers/Inventario/Personal/Index';
+import Ajustes from './containers/Inventario/Ajustes/Index';
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -174,10 +180,16 @@ export default function App(props) {
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/panel" component={Panel} />
                   <Route exact path="/inventario/pedidos" component={Pedidos} />
+                  <Route exact path="/inventario/compras" component={Compras} />
+                  <Route exact path="/inventario/tareas" component={Tareas} />
+
                   <Route exact path="/inventario/productos" component={Productos} />
                   <Route exact path="/inventario/bodegas" component={Bodegas} />
                   <Route exact path="/inventario/proveedores" component={Proveedores} />
                   <Route exact path="/inventario/inventario" component={Inventario} />
+                  <Route exact path="/inventario/transferencias" component={Transferencias} />
+                  <Route exact path="/personal" component={Usuarios} />
+                  <Route exact path="/ajustes" component={Ajustes} />
 
                   
                   <Route render={() => <Redirect to="/panel" />} />
