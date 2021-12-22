@@ -44,13 +44,13 @@ class VoucherController extends Controller
         switch ($module) {
             case 'compra':
                 $data = Order::find($filtro['id']);
-                $dataBody = OrderProduct::join('products', 'products.id', 'order_products.product_id')->select('order_products.*', 'products.name as product')->where('order_id', $filtro['id'])->get();
+                $dataBody = OrderProduct::join('products', 'products.id', 'order_products.product_id')->select('order_products.*', 'products.name as product','products.bar_code as bar_code','products.serial_code as serial_code')->where('order_id', $filtro['id'])->get();
 
                 return PDF::loadView('compra', ['data' => $data, 'body' => $dataBody]);
                 break;
             case 'pedido':
-                $data  = Solicitude::join('warehouses', 'warehouses.id', 'solicitudes.warehouse_id')->leftjoin('users', 'users.id', 'solicitudes.authorized_by')->where('solicitudes.id', $filtro['id'])->select('solicitudes.id', 'warehouses.name as warehouse', 'users.names as user')->first();
-                $dataBody = SolicitudeProduct::join('products', 'products.id', 'solicitude_products.product_id')->select('solicitude_products.*', 'products.name as product')->where('solicitude_id', $filtro['id'])->get();
+                $data  = Solicitude::join('warehouses', 'warehouses.id', 'solicitudes.warehouse_id')->leftjoin('users', 'users.id', 'solicitudes.authorized_by')->where('solicitudes.id', $filtro['id'])->select('solicitudes.id', 'warehouses.name as warehouse', 'users.names as user','users.names as username')->first();
+                $dataBody = SolicitudeProduct::join('products', 'products.id', 'solicitude_products.product_id')->select('solicitude_products.*', 'products.name as product','products.bar_code as bar_code','products.serial_code as serial_code')->where('solicitude_id', $filtro['id'])->get();
                 return PDF::loadView('pedido', ['data' => $data, 'body' => $dataBody]);
                 break;
             case 'ajuste':

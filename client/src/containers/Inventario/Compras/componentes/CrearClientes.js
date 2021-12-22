@@ -35,11 +35,11 @@ export default function Crear(props) {
     const [subTotalV, setSubTotalV] = React.useState(0)
 
     React.useEffect(() => {
-        if (initializer.usuario != null) {
+        if (initializer.usuario != null&&props.open) {
             obtenerTodos(setProveedorData, initializer)
 
         }
-    }, [initializer.usuario])
+    }, [initializer.usuario&&props.open])
     React.useEffect(() => {
         if (props.sistema != null) {
             setProductos([])
@@ -197,6 +197,8 @@ if(proveedor!=""){
                         />
 
                     </Grid>
+                    {
+                        productosData.length!=0&&(
                 <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
 
@@ -216,7 +218,7 @@ if(proveedor!=""){
                         />
 
                     </Grid>
-         
+                        )}
                   
                  
                  <Grid item xs={12} md={12}>

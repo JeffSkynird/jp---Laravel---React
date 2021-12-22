@@ -63,7 +63,7 @@ export default function Crear(props) {
             setUnity(props.sistema.unity_id)
             setCategory(props.sistema.category_id)
 
-            setSerie(props.sistema.serie)
+            setSerie(props.sistema.serial_code)
             setBarcode(props.sistema.bar_code)
             setStockMax(props.sistema.max_stock)
 
@@ -86,13 +86,13 @@ export default function Crear(props) {
             'name': nombre,
             'category_id': category,
             'description': descripcion,
-            'stock': 0,
             'min_stock': stockMin,
+            'serial_code': serie,
             'max_stock': stockMax,
             'unity_id': unity,
             'url': image,
             'bar_code': barcode,
-            'warehouse_id': bodega,
+            'warehouse_id': 2,
             'user_id': 1
         }
         if (props.sistema == null) {
@@ -196,6 +196,15 @@ export default function Crear(props) {
                         onChange={(e) => setBarcode(e.target.value)}
 
                     /></Grid>
+                          <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width: '100%' }}
+
+                        label="Código serial"
+                        value={serie}
+                        onChange={(e) => setSerie(e.target.value)}
+
+                    /></Grid>
                     <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
 
@@ -276,7 +285,7 @@ export default function Crear(props) {
                         onChange={(e) => setDescripcion(e.target.value)}
 
                     /></Grid>
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+               {/*      <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -303,7 +312,7 @@ export default function Crear(props) {
                             )}
                         />
 
-                    </Grid>
+                    </Grid> */}
                     <Grid item md={12} xs={12}>
                         <input
                             accept="image/*"

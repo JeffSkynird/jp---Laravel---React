@@ -13,6 +13,7 @@ import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido,obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
 import { obtenerTodos } from '../../../../utils/API/proveedores';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
+import {  obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
@@ -37,11 +38,13 @@ export default function Crear(props) {
     const [bodegaData, setBodegaData] = React.useState([])
     const [bodegaO, setBodegaO] = React.useState('')
     const [bodegaD, setBodegaD] = React.useState('')
-
+    const [razon, setRazon] = React.useState("")
+    const [razonData, setRazonData] = React.useState([])
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerTodos(setProveedorData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
+            obtenerRazones(setRazonData, initializer)
 
         }
     }, [initializer.usuario ])
@@ -71,6 +74,7 @@ export default function Crear(props) {
         setAlmacen([])
         props.setSelected(null)
         props.carga()
+        props.setOpen(false)
     }
    
     const getName = (id,data) => {
@@ -169,13 +173,23 @@ export default function Crear(props) {
         })
         return res
     }
+    const obtenerRazon=(id)=> {
+        let nombre=""
+        razonData.map((e)=>{
+            if(e.id==id){
+                nombre=e.name
+            }
+        })
+        return nombre
+    }
+   
     const almacenar=(dat)=>{
      
        if(bodegaD!=""){
         let t=almacen.slice()
         dat.map((e)=>{
            
-            t.push({...e,warehouse_idO:bodegaO,warehouse_id:bodegaD,warehouse:obtenerBodega(bodegaD),product_id:e.id})
+            t.push({...e,reason_id:razon,reason:obtenerRazon(razon),warehouse_idO:bodegaO,warehouse_id:bodegaD,warehouse:obtenerBodega(bodegaD),warehouseO:obtenerBodega(bodegaO),product_id:e.id})
         })
     
         quitarInventario(dat)
@@ -218,7 +232,7 @@ export default function Crear(props) {
                     Seleccione los productos y envíelos a la bodega correspondiente
                 </DialogContentText>
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
      size="small"
                             style={{ width: '100%' }}
@@ -244,7 +258,7 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
             size="small"
                             style={{ width: '100%' }}
@@ -271,7 +285,33 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-                    
+                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                        <Autocomplete
+
+                            style={{ width: '100%' }}
+                            size="small"
+                            options={razonData}
+                            
+                            value={getName(razon,razonData)}
+                            onChange={(event, newValue) => {
+                              
+                                if (newValue != null) {
+
+                                    setRazon(newValue.id);
+                                } else {
+
+                                    setRazon('')
+
+                                }
+                              }}
+                            getOptionLabel={(option) =>option.name}
+                         // prints the selected value
+                            renderInput={params => (
+                                <TextField    variant="outlined" {...params} label="Seleccione un motivo" variant="outlined" fullWidth />
+                            )}
+                        />
+
+                    </Grid>
                   
                  
                  <Grid item xs={12} md={12}>
@@ -292,7 +332,6 @@ export default function Crear(props) {
                           },
                         { title: "Código de barras", field: "bar_code" },
                         { title: "Stock", field: "stock" }
-                
 
 
 
@@ -352,8 +391,10 @@ id={2}
       },
     { title: "Código de barras", field: "bar_code" },
     { title: "Stock", field: "stock" },
-       { title: "Bodega Destino", field: "warehouse" }
-
+    { title: "Bodega Origen", field: "warehouseO" },
+       { title: "Bodega Destino", field: "warehouse" },
+      
+       { title: "Motivo", field: "reason" }
 
 
 

@@ -14,11 +14,18 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
+            $type = $request->input('type');
+            $data = array();
+            if($type!=null){
+            $data = Order::selectRaw('orders.*')->where('type',$type)->groupBy('orders.id')->get();
 
-            $data = Order::selectRaw('orders.*')->groupBy('orders.id')->get();
+            }else{
+                $data = Order::selectRaw('orders.*')->groupBy('orders.id')->get();
+
+            }
             return response()->json([
                 "status" => "200",
                 'data' => $data,

@@ -133,9 +133,10 @@
 
                 <tr>
                     <th>Producto</th>
+                    <th>Codigo de barras</th>
+                    <th>Codigo serial</th>
                     <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>SubTotal</th>
+                
                 </tr>
             </thead>
 
@@ -143,11 +144,10 @@
                 @foreach ($body as $dt)
                 <tr style="background-color:#E5E5E5;">
                     <td>{{ $dt['product'] }}</td>
-
-                    
+                    <td>{{ $dt['bar_code'] }}</td>
+                    <td>{{ $dt['serial_code'] }}</td>
                     <td>{{ $dt['quantity'] }}</td>
-                    <td>${{ $dt['price'] }}</td>
-                    <td>${{ $dt['subtotal'] }}</td>
+                
                   
 
                 </tr>

@@ -17,7 +17,8 @@ class TransferController extends Controller
            join('products as p', 'transfers.product_id', '=', 'p.id')
             ->join('warehouses as w1', 'transfers.warehouse_origin', '=', 'w1.id')
             ->join('warehouses as w2', 'transfers.warehouse_destination', '=', 'w2.id')
-            ->selectRaw('p.image,p.bar_code,p.name,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
+            ->join('reasons', 'transfers.reason_id', '=', 'reasons.id')
+            ->selectRaw('reasons.name as reason,p.image,p.bar_code,p.name,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -45,7 +46,8 @@ class TransferController extends Controller
                     'product_id'=>$val['product_id'],
                     'warehouse_origin'=>$val['warehouse_idO'],
                     'warehouse_destination'=>$val['warehouse_id'],
-                    'user_id'=>1
+                    'user_id'=>1,
+                    'reason_id'=>$val['reason_id']
 
                 ]);
             }

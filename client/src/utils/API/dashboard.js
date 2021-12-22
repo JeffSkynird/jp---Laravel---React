@@ -2,28 +2,24 @@ import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT} from '../../config/API'
 const axios = require('axios');
 
-export const obtenerStatusPorSupervisor = (supervisor,setData1,store,min,max) => {
+export const obtenerProductosBodegas = (data,setData,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
-let supervisor_id = supervisor 
-if(JSON.parse(desencriptarJson(usuario)).user.type_user == "supervisor"){
-  supervisor_id = JSON.parse(desencriptarJson(usuario)).user.user_ca
-}
-
-let url = ENTRYPOINT+"clients/status_by_supervisor?supervisor_id="+supervisor_id+"&min="+min+"&max="+max
+  
+let url = ENTRYPOINT+"warehouse_by_products"
 let setting = {
   method: "Get",
   url: url,
+  params:data,
   headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
-
 };
-
 
 axios(setting)
   .then((res) => {
     let response = res.data
    if(response.type!="error"){
-      setData1({values:response.data,labels:response.types})
+     console.log(response.data)
+    setData({values:response.data.cantidad,labels:response.data.bodegas})
      
 
    }else{
@@ -36,6 +32,130 @@ axios(setting)
 
   });
 }
+
+export const obtenerIngresosEgresos = (data,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+  
+let url = ENTRYPOINT+"income_expense"
+let setting = {
+  method: "Get",
+  url: url,
+  params:data,
+  headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
+};
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+     console.log(response.data)
+    setData({ingresos:response.data.ingresos,egresos:response.data.egresos})
+     
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+export const totalComprasUltimosMeses = (data,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+  
+let url = ENTRYPOINT+"last_total_orders"
+let setting = {
+  method: "Get",
+  url: url,
+  params:data,
+  headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
+};
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+     console.log(response.data)
+    setData({mes:response.data.mes,total:response.data.total})
+     
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+
+export const obtenerTareasStatus = (data,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+  
+let url = ENTRYPOINT+"tasks_status"
+let setting = {
+  method: "Get",
+  url: url,
+  params:data,
+  headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
+};
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+     console.log(response.data)
+    setData({completas:response.data.completadas,incompletas:response.data.sinCompletar})
+     
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+export const obtenerPedidosStatus = (data,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+  
+let url = ENTRYPOINT+"solicitudes_status"
+let setting = {
+  method: "Get",
+  url: url,
+  params:data,
+  headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
+};
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+     console.log(response.data)
+    setData({autorizados:response.data.autorizados,noAutorizados:response.data.noAutorizados})
+     
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+
+
 export const obtenerStatusPorAsesor = (asesor,setData1,store,min,max) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
@@ -99,12 +219,13 @@ axios(setting)
 
   });
 }
-export const obtenerKpis = (setData1,setData2,setData3,setData4,store,min,max) => {
+export const obtenerKpis = (data,setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
  
-  let url = ENTRYPOINT+"kpis"+"?min="+min+"&max="+max
+  let url = ENTRYPOINT+"kpis"
   let setting = {
     method: "Get",
+    params:data,
     url: url,
     headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
 
@@ -115,9 +236,8 @@ export const obtenerKpis = (setData1,setData2,setData3,setData4,store,min,max) =
     .then((res) => {
       let response = res.data
      if(response.type!="error"){
-        setData1(response.leads)
-        setData2(response.asessors)
-        setData3(response.supervisors)
+        setData(response.data)
+      
       //  setData4(response.leads)
 
      }else{

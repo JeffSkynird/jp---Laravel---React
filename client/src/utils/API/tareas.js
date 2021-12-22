@@ -27,7 +27,7 @@ export const editar= (id,data, store,limpiar) => {
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
-          limpiar();
+        
         }
       })
       .catch((error) => {
@@ -169,6 +169,41 @@ axios(setting)
 
   });
 }
+
+
+
+export const obtenerUsuariosAsignados = (id,setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"tasks/users/"+id
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
+}
+
 export const obtenerSolicitudes = (id,setData,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 

@@ -10,11 +10,13 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment, FormControlLabel, Checkbox, ListItem, List, ListItemSecondaryAction, ListItemText, Typography, Paper } from '@material-ui/core';
-import { editar as editarProveedor, obtenerSolicitudes, obtenerSubTareas, registrar as registrarProveedor } from '../../../../utils/API/tareas';
+import { editar as editarProveedor, obtenerSolicitudes, obtenerSubTareas, obtenerUsuariosAsignados, registrar as registrarProveedor } from '../../../../utils/API/tareas';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 import DateFnsUtils from '@date-io/date-fns';
+import tasks from '../../../../assets/tareas.png'
+import Chip from '@material-ui/core/Chip';
 import {
-    DatePicker,
+    DateTimePicker,
     KeyboardDatePicker,
     MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
@@ -28,6 +30,7 @@ import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import Agregar from './Agregar';
 import { obtenerTodos } from '../../../../utils/API/proveedores';
+import {obtenerTodos as obtenerUsuarios} from '../../../../utils/API/usuarios'; 
 import { utcDate } from '../../../../utils/Date';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -38,8 +41,9 @@ export default function Crear(props) {
     const [open, setOpen] = React.useState(false)
     const [mostrarTareas, setMostrarTareas] = React.useState(false)
     const [mostrarTareasCampo, setMostrarTareaCampo] = React.useState(false)
+    const [mostrarUsersCampo, setMostrarUsersCampo] = React.useState(false)
 
-    
+
     const [logo, setLogo] = React.useState(null)
     const [celular, setCelular] = React.useState("")
     const [correo, setCorreo] = React.useState("")
@@ -56,6 +60,11 @@ export default function Crear(props) {
     const [productos, setProductos] = React.useState([])
     const [bodegaData, setBodegaData] = React.useState([])
     const [bodegaD, setBodegaD] = React.useState('')
+    const [usersData, setUsersData] = React.useState([])
+
+    const [usuarioData, setUsuarioData] = React.useState([])
+    const [usuario, setUsuario] = React.useState('')
+
 
     React.useEffect(() => {
         if (props.sistema != null) {
@@ -63,6 +72,9 @@ export default function Crear(props) {
             setComplete(props.sistema.is_complete)
             obtenerSubTareas(props.sistema.id, setSubTaskData, initializer)
             obtenerSolicitudes(props.sistema.id, setProductos, initializer)
+            obtenerUsuariosAsignados(props.sistema.id, setUsersData, initializer)
+
+
         }
     }, [props.sistema])
 
@@ -70,11 +82,17 @@ export default function Crear(props) {
         if (initializer.usuario != null) {
             obtenerTodos(setProveedorData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
+            setFinalDate(addDaysToDate(new Date(), 7))
+            obtenerUsuarios(setUsuarioData, initializer)
 
         }
     }, [initializer.usuario])
 
-
+    function addDaysToDate(date, days) {
+        var res = new Date(date);
+        res.setDate(res.getDate() + days);
+        return res;
+    }
 
     const agregar = () => {
         if (addDescription != '') {
@@ -84,14 +102,14 @@ export default function Crear(props) {
     }
     const guardar = () => {
         let resp = true
-        subtaskData.map((e,i)=>{
-            if(e.is_complete==false){
-                resp= false
+        subtaskData.map((e, i) => {
+            if (e.is_complete == false) {
+                resp = false
             }
-                
-            
+
+
         })
-        if(complete&&resp==false){
+        if (complete && resp == false) {
             initializer.mostrarNotificacion({ type: "warning", message: 'Tiene subtareas pendientes' });
 
             return;
@@ -104,7 +122,8 @@ export default function Crear(props) {
             'warehouse_id': bodegaD,
             'user_id': 1,
             'init_date': utcDate(initDate),
-            'final_date': utcDate(finalDate)
+            'final_date': utcDate(finalDate),
+            'users': usersData
         }
         if (props.sistema == null) {
             registrarProveedor(data, initializer, limpiar)
@@ -117,7 +136,7 @@ export default function Crear(props) {
 
 
     }
-    
+
     const limpiar = () => {
         setDescription("")
         setComplete(false)
@@ -125,7 +144,10 @@ export default function Crear(props) {
         setProductos([])
         setBodegaD('')
         setProveedor('')
-
+        setUsersData([])
+        setUsuario('')  
+        setMostrarTareaCampo(false)
+        setMostrarUsersCampo(false)
         props.setSelected(null)
         props.carga()
         props.setOpen(false)
@@ -152,18 +174,12 @@ export default function Crear(props) {
         })
         setSubTaskData([...data])
     }
-    const quitar = (row) => {
-        let id = row.tableData.id
-        let t = productos.slice()
-
-
-        setProductos(t.filter((e, i) => i != id))
-    }
+  
     const carga = (product, quantity) => {
         //comprueba si el producto ya esta en la lista
         let existe = productos.find(e => e.id == product.id)
         if (!existe) {
-            setProductos([...productos, { id: product.id, name: product.name, quantity }])
+            setProductos([...productos, { id: product.id, name: product.name, quantity, stock: product.stock }])
 
         } else {
             //Remplaza el producto
@@ -183,6 +199,27 @@ export default function Crear(props) {
         })
         return object
     }
+    const handleDelete = (index) => {
+        let data = usersData
+        let nw = data.filter((item, i) => {
+            return i != index
+        })
+        setUsersData([...nw])
+    }
+    const agregarUsuario = (value) => {
+        if(!existeUsuario(value)){
+            setUsersData([...usersData, {...value }])
+            setUsuario('')
+        }
+    }
+    const existeUsuario = (value) => {
+        let existe = usersData.find(e => e.id == value.id)
+        if (!existe) {
+            return false
+        } else {
+            return true
+        }
+    }
     return (
         <Dialog
             fullScreen={true}
@@ -197,7 +234,7 @@ export default function Crear(props) {
             aria-describedby="alert-dia
             log-slide-description"
         >
-            <Agregar setOpen={setOpen} open={open} carga={carga} bodega={bodegaD}/>
+            <Agregar setOpen={setOpen} open={open} carga={carga} bodega={bodegaD} />
 
             <DialogTitle id="alert-dialog-slide-title">Tareas</DialogTitle>
             <DialogContent>
@@ -210,7 +247,7 @@ export default function Crear(props) {
 
 
                         <MuiPickersUtilsProvider style={{ width: "100%" }} utils={DateFnsUtils} locale={es}>
-                            <KeyboardDatePicker
+                            <DateTimePicker
                                 autoOk
 
                                 ampm={false}
@@ -234,7 +271,7 @@ export default function Crear(props) {
 
 
                         <MuiPickersUtilsProvider style={{ width: "100%" }} utils={DateFnsUtils} locale={es}>
-                            <KeyboardDatePicker
+                            <DateTimePicker
                                 autoOk
 
                                 ampm={false}
@@ -242,7 +279,7 @@ export default function Crear(props) {
                                 inputVariant="outlined"
                                 label="Fecha final"
                                 style={{ width: "100%" }}
-                                 disablePast
+                                disablePast
                                 format="yyyy-MM-dd"
                                 value={finalDate}
 
@@ -263,7 +300,9 @@ export default function Crear(props) {
                         onChange={(e) => setDescription(e.target.value)}
 
                     /></Grid>
-                    {
+
+
+{
                         props.sistema != null ?
                             <Grid item xs={12}>
                                 <FormControlLabel
@@ -287,24 +326,84 @@ export default function Crear(props) {
 
                     }
 
+                    <Grid item xs={12} style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                        <Typography color="initial">Tecnicos asignados</Typography>
+                        <IconButton size="small" onClick={() => {
+                            setMostrarUsersCampo(true)
+                        }}>
+                            <AddIcon />
+                        </IconButton>
+
+                    </Grid>
+                    {
+                        mostrarUsersCampo && (
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    size="small"
+                                    style={{ width: '100%' }}
+                                    options={usuarioData}
+                                    value={getName(usuario, usuarioData)}
+                                    getOptionLabel={(option) => option.names+" "+option.last_names}
+                                    onChange={(event, value) => {
+                                        if (value != null) {
+                                            setUsuario(value.id)
+                                            setMostrarUsersCampo(false)
+                                            agregarUsuario(value)
+                                        } else {
+                                            setUsuario('')
+                                        }
+
+                                    }} // prints the selected value
+                                    renderInput={params => (
+                                        <TextField {...params} label="Seleccione un usuario" variant="outlined" fullWidth />
+                                    )}
+                                />
+                            </Grid>
+
+                        )
+                    }
+                    {
+                        usersData.length!=0 && (
+                            <Grid item xs={12}>
+                            {
+                                usersData.map((e) => (
+                                    <Chip
+                                        style={{ marginRight: '5px' }}
+                                        label={e.names}
+                                        onDelete={() => handleDelete(e.id)}
+    
+                                    />
+                                ))
+                            }
+    
+    
+                        </Grid>
+
+                        )
+                    }
+          
+
+
+
                     <Grid item xs={12} style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
 
                         <Typography color="initial">Agregar sub tareas</Typography>
-                    <div>
-                    <IconButton size="small" onClick={() => setMostrarTareas(!mostrarTareas)}>
+                        <div>
+                            <IconButton size="small" onClick={() => setMostrarTareas(!mostrarTareas)}>
 
-{mostrarTareas?<VisibilityOffIcon />:<VisibilityIcon />}
-</IconButton>
-                    <IconButton size="small" onClick={()=>{setMostrarTareaCampo(true)
-                    setMostrarTareas(true)
-                    }}>
-                                    <AddIcon />
-                                </IconButton>
+                                {mostrarTareas ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                            </IconButton>
+                            <IconButton size="small" onClick={() => {
+                                setMostrarTareaCampo(true)
+                                setMostrarTareas(true)
+                            }}>
+                                <AddIcon />
+                            </IconButton>
 
-                    </div>
-                     
+                        </div>
 
-                       
+
+
                     </Grid>
                     {
                         mostrarTareasCampo && (
@@ -331,128 +430,47 @@ export default function Crear(props) {
                             </Grid>
                         )
                     }
-                    {
-                        mostrarTareas && (
+               
 
                             <Grid item xs={12}>
                                 <Paper elevation={1} >
-                                <List dense  style={{margin:0,padding:0}}>
-                                    {subtaskData.map((value, i) => {
-                                        return (
-                                            <ListItem key={i} button onClick={() => eliminar(i)}>
-                                                <ListItemText primary={value.description} />
-                                                <ListItemSecondaryAction>
-                                                    <Checkbox
-                                                        edge="end"
-                                                        checked={value.is_complete ? true : false}
-                                                        onChange={() => handleToggle(i)}
+                                    <List style={{ margin: 0, padding: 0 }}>
+                                        {subtaskData.map((value, i) => {
+                                            return (
+                                                <ListItem key={i} button onClick={() => eliminar(i)}>
+                                                    <ListItemText primary={value.description} />
+                                                    <ListItemSecondaryAction>
+                                                        <Checkbox
+                                                            edge="end"
+                                                            checked={value.is_complete ? true : false}
+                                                            onChange={() => handleToggle(i)}
 
 
-                                                    />
-                                                </ListItemSecondaryAction>
-                                            </ListItem>
-                                        );
-                                    })}
-                                </List>
+                                                        />
+                                                    </ListItemSecondaryAction>
+                                                </ListItem>
+                                            );
+                                        })}
+                                    </List>
 
                                 </Paper>
 
 
                             </Grid>
-                        )
-                    }
+
+                  
                     {
-                        props.sistema == null ?
-                            <Grid item xs={12} md={12} style={{ display: 'flex' }}>
-                                <Autocomplete
+                        subtaskData.length == 0 && (
+                            <Grid item xs={12}>
 
-                                    style={{ width: '100%' }}
-                                    size="small"
-                                    options={bodegaData}
-                                    getOptionDisabled={(option) => option.id === bodegaD}
-                                    value={getName(bodegaD, bodegaData)}
-                                    getOptionLabel={(option) => option.name+ " - "+(option.supplier!=null?option.supplier:"JP")}
-                                    onChange={(event, value) => {
-                                        if (value != null) {
-                                            if (bodegaD != value.id) {
-                                                setBodegaD(value.id)
+                                <div style={{ display: 'flex', marginTop: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <img src={tasks} width={300} alt="" srcset="" />
+                                    <p>No hay registros</p>
+                                </div>
 
-                                            }
-                                        } else {
-
-                                            setBodegaD('')
-
-                                        }
-
-                                    }} // prints the selected value
-                                    renderInput={params => (
-                                        <TextField {...params} label="Seleccione la bodega" variant="outlined" fullWidth />
-                                    )}
-                                />
-
-                            </Grid>
-                            : null
+                            </Grid>)
                     }
-
-                    <Grid item xs={12} md={12}>
-
-                        <MaterialTable
-                            icons={TableIcons}
-                            columns={[
-                                {
-                                    title: 'Producto',
-                                    field: 'name',
-                                    render: rowData => (
-                                        <span >{rowData.name}</span>
-                                    ),
-                                },
-                                { title: "Cantidad", field: "quantity" }
-                            ]}
-                            data={
-                                productos
-                            }
-
-                            localization={LocalizationTable}
-                            title="Materiales"
-                            actions={[{
-                                icon: TableIcons.Add,
-                                tooltip: 'Agregar',
-                                isFreeAction: true,
-                                onClick: (event, rowData) => {
-                                    setOpen(true)
-                                }
-                            },
-                            {
-                                icon: TableIcons.Delete,
-                                tooltip: 'Eliminar',
-
-                                onClick: (event, rowData) => {
-                                    quitar(rowData)
-                                }
-                            }]}
-
-                            options={{
-                                pageSize: 10,
-
-                                actionsColumnIndex: -1,
-                                width: '100%',
-                                maxBodyHeight: 350,
-                                padding: 'dense',
-                                headerStyle: {
-                                    textAlign: 'left'
-                                },
-                                cellStyle: {
-                                    textAlign: 'left'
-                                },
-                                searchFieldStyle: {
-
-                                    padding: 5
-                                }
-                            }}
-
-                        />
-                    </Grid>
-
+                 
 
                 </Grid>
 

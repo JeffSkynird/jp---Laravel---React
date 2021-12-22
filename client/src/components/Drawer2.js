@@ -15,7 +15,6 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import AccountCircle from '@material-ui/icons/PermIdentity';
-import NotificationsIcon from '@material-ui/icons/NotificationsNone';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
@@ -25,7 +24,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useHistory } from "react-router-dom";
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-                    import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
+import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
 import Toolbar from '@material-ui/core/Toolbar';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { PUBLIC_PATH } from '../config/API'
@@ -40,6 +39,7 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import TransferWithinAStationIcon from '@material-ui/icons/TransferWithinAStation';
 import TransformIcon from '@material-ui/icons/Transform';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import TuneIcon from '@material-ui/icons/Tune';
 import { cerrarSesion, obtenerUsuario } from '../utils/API/auth';
 import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -49,8 +49,11 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import SpeedDial from './SpeedDial';
 import logo from '../assets/logo.png'
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import { Badge, Box, Button, Grid } from '@material-ui/core';
-
+import PrintIcon from '@material-ui/icons/Print';
+import Notifications from './Notification';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -109,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     },
     nested: {
         paddingLeft: theme.spacing(4),
-      },
+    },
     avatar: {
         margin: theme.spacing(2),
 
@@ -118,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     drawer: {
-        overflow:'hidden',
+        overflow: 'hidden',
         [theme.breakpoints.up('sm')]: {
             width: drawerWidth,
             flexShrink: 0,
@@ -140,7 +143,7 @@ const useStyles = makeStyles((theme) => ({
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
         width: drawerWidth,
-        overflowX:'hidden',
+        overflowX: 'hidden',
     },
     content: {
         flexGrow: 1,
@@ -158,6 +161,8 @@ function ResponsiveDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [openCollapse, setOpenCollapse] = React.useState(false);
+    const [openCollapse2, setOpenCollapse2] = React.useState(false);
+    const [openCollapse3, setOpenCollapse3] = React.useState(false);
 
 
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -168,11 +173,11 @@ function ResponsiveDrawer(props) {
 
     const [names, setNames] = React.useState('')
     const initializer = useContext(Initializer);
-
+    const [notification, setNotification] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerUsuario(setInfo, initializer)
+            obtenerUsuario(setInfo, setNotification, initializer)
         }
     }, [initializer.usuario])
     React.useEffect(() => {
@@ -239,79 +244,108 @@ function ResponsiveDrawer(props) {
                         <ListItemText primary={'Dashboard'} />
                     </ListItem>
 
-                
+
                     <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><ListIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Inventario'} />
+                        <ListItemIcon style={{ color: 'inherit' }}><TuneIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Gestión'} />
                         {openCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </ListItem>
-
                     <Collapse in={openCollapse} timeout="auto" unmountOnExit>
-                        <List  component="div" disablePadding >
-                    {/*     <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/inventario')} >
+                        <List component="div" disablePadding >
+                            {/*     <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/inventario')} >
                                 <ListItemIcon>
                                     <PostAddIcon />
                                 </ListItemIcon>
                                 <ListItemText  primary="Inventario" />
                             </ListItem> */}
-                                                  <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/tareas')} >
-                                <ListItemIcon>
-                                    <AssignmentIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Tareas" />
-                            </ListItem>
-                              <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/pedidos')} >
-                                <ListItemIcon>
-                                    <AssignmentReturnedIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Pedidos" />
-                          
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/compras')} >
-                                <ListItemIcon>
-                                    <AllInboxIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Compras" />
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/bodegas')} >
+
+
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/bodegas')} >
                                 <ListItemIcon>
                                     {" "}
                                     <StoreIcon />{" "}
                                 </ListItemIcon>
-                                <ListItemText  primary="Bodegas" />
+                                <ListItemText primary="Bodegas" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/productos')} >
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/productos')} >
                                 <ListItemIcon>
                                     <PostAddIcon />
                                 </ListItemIcon>
-                                <ListItemText  primary="Productos" />
+                                <ListItemText primary="Productos" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/transferencias')} >
-                                <ListItemIcon>
-                                    <TransferWithinAStationIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Transferencias" />
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/ajustes')}>
-                                <ListItemIcon>
-                                    <TransformIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Ajuste" />
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/proveedores')}>
+
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/proveedores')}>
                                 <ListItemIcon>
                                     <EmojiTransportationIcon />
                                 </ListItemIcon>
-                                <ListItemText  primary="Clientes" />
+                                <ListItemText primary="Clientes" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
+                                <ListItemIcon ><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Personal'} />
                             </ListItem>
                         </List>
                     </Collapse>
-
-                    <ListItem button onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Personal'} />
+                    <ListItem button onClick={() => setOpenCollapse2(!openCollapse2)} style={comprobador('/inventario')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><ImportExportIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Movimientos'} />
+                        {openCollapse2 ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </ListItem>
-                 
+                    <Collapse in={openCollapse2} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding >
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/compras')} >
+                                <ListItemIcon>
+                                    <PostAddIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Inventario" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/compras')} >
+                                <ListItemIcon>
+                                    <AllInboxIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Ingresos" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/transferencias')} >
+                                <ListItemIcon>
+                                    <TransferWithinAStationIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Transferencias" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/ajustes')}>
+                                <ListItemIcon>
+                                    <TransformIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Ajuste" />
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                    <ListItem button onClick={() => setOpenCollapse3(!openCollapse3)} style={comprobador('/inventario')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><AssignmentTurnedInIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Tareas'} />
+                        {openCollapse3 ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </ListItem>
+                    <Collapse in={openCollapse3} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding >
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/tareas')} >
+                                <ListItemIcon>
+                                    <AssignmentIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Tareas" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/pedidos')} >
+                                <ListItemIcon>
+                                    <AssignmentReturnedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Pedidos" />
+
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                    <ListItem button style={comprobador('/reportes')}>
+                            <ListItemIcon style={{ color: 'inherit' }}><PrintIcon /> </ListItemIcon>
+                            <ListItemText primary={'Reportes'} />
+                        </ListItem>
+
                 </List>
 
                 <div>
@@ -345,7 +379,7 @@ function ResponsiveDrawer(props) {
                 history.location.pathname != "/bienvenida" && history.location.pathname != "/login" ?
 
                     <React.Fragment>
-                        <AppBar position="fixed"  color="white" elevation={0} style={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                        <AppBar position="fixed" color="white" elevation={0} style={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
                             <Toolbar>
 
                                 <IconButton
@@ -353,7 +387,7 @@ function ResponsiveDrawer(props) {
                                     aria-label="open drawer"
                                     edge="start"
                                     onClick={handleDrawerToggle}
-                                
+
                                 >
                                     <MenuIcon />
                                 </IconButton>
@@ -374,11 +408,8 @@ function ResponsiveDrawer(props) {
                                 <div className={classes.grow} />
 
                                 <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
-                                    <IconButton aria-label="show 4 new mails" color="inherit" >
 
-                                        <NotificationsIcon style={{ color: '#1e88e5' }} />
-
-                                    </IconButton>
+                                    <Notifications notification={notification} />
 
                                 </Avatar>
                                 <Avatar variant="rounded" style={{ marginLeft: 10, marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
@@ -410,23 +441,23 @@ function ResponsiveDrawer(props) {
                                     {drawer}
                                 </Drawer>
                             </Hidden>
-                         
+
                         </nav>
                     </React.Fragment>
                     :
                     null
             }
-            <main className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
+            <main style={{ overflow: 'auto' }} className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
 
 
                 <div className={classes.toolbar} />
                 {props.children}
                 {
-                    initializer.usuario != null?
-                    <SpeedDial/>
-                    :null
+                    initializer.usuario != null ?
+                        <SpeedDial />
+                        : null
                 }
-             
+
             </main>
         </div>
     );

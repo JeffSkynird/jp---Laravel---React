@@ -52,6 +52,21 @@ export default function Sistemas(props) {
         })
         return tot
     }
+    const colores=(stock,minimo,maximo)=>{
+        if(stock==minimo){
+            return '#ffa500'
+        }else if(stock<minimo){
+            return '#ff0000'
+        }else if(stock>minimo && stock<maximo){
+            return 'green'
+        }else if(stock==maximo){
+            return '#ffa500'
+        }else if(stock>maximo){
+            return '#ff0000'
+        }else{
+            return '#000000'
+        }
+    }
     return (
         <Grid container spacing={2}>
 
@@ -114,11 +129,18 @@ export default function Sistemas(props) {
                                 />
                             ),
                         },
+                        { title: "Código serial", field: "serial_code" },
+                        { title: "Código barras", field: "bar_code" },
 
                         { title: "Nombre", field: "name" },
                         { title: "Medida", field: "unity" },
                         { title: "Categoria", field: "category" },
-                        { title: "Stock", field: "stock" },
+                        { title: "Stock", field: "stock",render: rowData => ( <span style={{borderRadius:10,padding:5,backgroundColor:colores(rowData.stock,rowData.min_stock,rowData.max_stock),color:'white',fontWeight:'bold' }}>
+                          
+                                {rowData.stock}
+                         
+                        
+                        </span> ) },
 
                         { title: "Registro", field: "created_at", type: "datetime" },
 

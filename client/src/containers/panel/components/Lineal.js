@@ -3,14 +3,14 @@ import Chart from "react-apexcharts";
 export default function BarChart(props) {
     const [series,setSeries]=useState([
      {
-      name: 'Número',
-      data: props.values
+      name: 'Total',
+      data: props.total
     }])
       const [options,setOptions]=useState({
         chart: {
           height: 350,
    
-          type: 'bar',
+          type: 'area',
           zoom: {
             enabled: true,
             type: 'x',
@@ -36,7 +36,7 @@ export default function BarChart(props) {
         dataLabels: {
           enabled: true,
           formatter: function (val) {
-            return val ;
+            return '$'+val;
           },
           offsetY: -20,
           style: {
@@ -46,7 +46,7 @@ export default function BarChart(props) {
         },
         
         xaxis: {
-          categories: props.labels,
+          categories: props.mes,
           position: 'bottom',
           axisBorder: {
             show: false
@@ -103,7 +103,7 @@ export default function BarChart(props) {
        
    
 
-        <Chart height={240} width={"100%"} options={options} series={series} type="bar"  />
+        <Chart height={240} width={"100%"} options={options} series={series} type="area"  />
 
     )
 }

@@ -100,6 +100,39 @@ export const eliminar = (id,store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   }
+  
+  export const registrarPedido = (data,store) => {
+    const { usuario, mostrarNotificacion, mostrarLoader } = store;
+    
+    let url = ENTRYPOINT+"solicitude";
+    let setting = {
+      method: "POST",
+      url: url,
+      data: data,
+      body: data,
+      headers: { Accept: "application/json",
+      Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+    };
+    mostrarLoader(true);
+  
+    axios(setting)
+      .then((res) => {
+        let response = res.data;
+        if (response.type != "error") {
+         
+          mostrarLoader(false);
+          mostrarNotificacion({ type: "success", message: response.message });
+        } else {
+          mostrarNotificacion({ type: "error", message: response.message });
+          mostrarLoader(false);
+        }
+      })
+      .catch((error) => {
+        mostrarLoader(false);
+  
+        mostrarNotificacion({ type: "error", message: error.message });
+      });
+  }
 export const registrar = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
@@ -198,11 +231,11 @@ export const registrar = (data,store) => {
 
     });
 }
-export const obtenerTodos = (setData,store) => {
+export const obtenerTodos = (type,setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
  
-  let url = ENTRYPOINT+"orders"
+  let url = ENTRYPOINT+"orders?type="+type
   let setting = {
     method: "Get",
     url: url,

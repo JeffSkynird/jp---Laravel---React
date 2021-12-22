@@ -4,7 +4,13 @@ namespace App\Http\Controllers\v1\Seguridad;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\Adjustment;
+use App\Models\Order;
+use App\Models\Solicitude;
+use App\Models\Task;
+use App\Models\Transfer;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use \Validator;
 
@@ -48,12 +54,35 @@ class UsuarioController extends Controller
             "type" => 'success'
         ]);
     }
+    public function notificationsNew(){
+       //SOLICITUDES
+      $pedidos = Solicitude::where('created_at', '>=', Carbon::now()->subMinutes(5)->toDateTimeString())->selectRaw('count(*) as total')->first();
+
+      //TAREAS
+      $tareas= Task::where('created_at', '>=', Carbon::now()->subMinutes(5)->toDateTimeString())->selectRaw('count(*) as total')->first();
+
+      //COMPRAS
+      $compras = Order::where('created_at', '>=', Carbon::now()->subMinutes(5)->toDateTimeString())->selectRaw('count(*) as total')->first();
+
+      //AJUSTES
+      $ajustes = Adjustment::where('created_at', '>=', Carbon::now()->subMinutes(5)->toDateTimeString())->selectRaw('count(*) as total')->first();
+
+      //TRANSFERENCIAS
+      $transferencias = Transfer::where('created_at', '>=', Carbon::now()->subMinutes(5)->toDateTimeString())->selectRaw('count(*) as total')->first(); 
+
+      if($pedidos->total > 0||$tareas->total > 0||$compras->total > 0||$ajustes->total > 0||$transferencias->total > 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
     public function showAuth()
     {
         return response()->json([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => Auth::user(),
+            "notifications" => $this->notificationsNew(),
             "type" => 'success'
         ]);
     }

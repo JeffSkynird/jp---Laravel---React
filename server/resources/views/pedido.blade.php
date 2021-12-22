@@ -124,7 +124,6 @@
     </header>
     <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Registros: {{count($body )}}</p>
     <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Bodega: {{$data['warehouse']}}</p>
-    <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Autorizado : {{$data['user']!=null?$data['user']:'N/A'}}</p>
 
 
     <section class="personal_data" style="margin-bottom:30px;">
@@ -133,8 +132,9 @@
 
                 <tr>
                     <th>Producto</th>
+                    <th>Codigo de barras</th>
+                    <th>Codigo serial</th>
                     <th>Cantidad</th>
-                 
                 </tr>
             </thead>
 
@@ -142,6 +142,8 @@
                 @foreach ($body as $dt)
                 <tr style="background-color:#E5E5E5;">
                     <td>{{ $dt['product'] }}</td>
+                    <td>{{ $dt['bar_code'] }}</td>
+                    <td>{{ $dt['serial_code'] }}</td>
 
                     
                     <td>{{ $dt['quantity'] }}</td>
@@ -153,8 +155,12 @@
             </tbody>
         </table>
     </section>
-
-
+        <div style="margin-top:500px;display:flex;width:100%;justify-content:center;align-items:center;">
+        <p style="text-align:center;margin-bottom:15px;" >_________________</p>
+        <br>
+        <p style="text-align:center;">{{$data['user']!=null?$data['user']:'N/A'}}</p>
+        </div>
+      
 
 
 </body>

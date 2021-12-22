@@ -107,7 +107,7 @@ export default function Sistemas(props) {
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
-
+                        { title: 'Tipo', field: 'status', render: rowData => rowData.status == 'I' ? 'Ingreso' : 'Egreso' },
                         { title: "Nombre", field: "name" },
                         { title: "Codigo de Barras", field: "bar_code" },
 
@@ -116,7 +116,7 @@ export default function Sistemas(props) {
                                 <span>{rowData.quantity}</span>
                             ),
                         },
-                        { title: "Tipo", field: "reason" },
+                        { title: "Motivo", field: "reason" },
 
 
                         { title: "Registro", field: "created_at", type: "datetime" },
@@ -133,7 +133,7 @@ export default function Sistemas(props) {
                         pageSize: 10,
                         showTitle: false,
                         actionsColumnIndex: -1,
-
+                        
                         maxBodyHeight: 350,
                         padding: 'dense',
                         headerStyle: {

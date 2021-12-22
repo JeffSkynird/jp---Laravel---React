@@ -8,6 +8,23 @@ use Illuminate\Http\Request;
 
 class ReasonController extends Controller
 {
+    public function incomeType(){
+        return response()->json([
+            "status" => "200",
+            'data'=>[
+                [
+                    'id'=>'I',
+                    'name'=>'Ingreso'
+                ],
+                [
+                    'id'=>'E',
+                    'name'=>'Egreso'
+                ]
+            ],
+            "message" => 'Data obtenida con éxito',
+            "type" => 'success'
+        ]);
+    }
     public function index()
     {
         try {

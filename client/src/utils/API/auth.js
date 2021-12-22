@@ -197,8 +197,8 @@ export const cerrarSesion = (store) => {
    
     });
 }
-export const obtenerUsuario = (setData,store) => {
-  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+export const obtenerUsuario = (setData,setNotification,store) => {
+  const { usuario,logout, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
 
 let url = ENTRYPOINT+"user"
@@ -216,14 +216,22 @@ axios(setting)
     let response = res.data
    if(response.type!="error"){
       setData(response.data)
-   
+      setNotification(response.notifications)
 
    }else{
    
    }
   })
   .catch((error) => {
-   
+    if (error.response) {
+ 
+      console.log(error.response.status);
+      if(error.response.status==401){
+        logout()
+        removeSession()
+        window.location.href="/login"
+      }
+    }
 
 
   });

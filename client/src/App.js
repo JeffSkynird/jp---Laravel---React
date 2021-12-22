@@ -119,6 +119,20 @@ export default function App(props) {
         type: 'light',
       },
 
+      overrides: {
+        MuiCssBaseline: {
+          '@global': {
+            '*': {
+              'scrollbar-width': 'thin',
+            },
+            '*::-webkit-scrollbar': {
+              width: '4px',
+              height: '4px',
+            }
+          }
+        }
+      }
+    
     }))
     setDark(createMuiTheme({
       palette: {
@@ -170,7 +184,7 @@ export default function App(props) {
 
         <CssBaseline />
 
-        <Grid container style={{ flexGrow: 1 }}>
+        <Grid container style={{ flexGrow: 1}}>
           <Grid item xs={12}>
 
             <Drawer2  history={history}>

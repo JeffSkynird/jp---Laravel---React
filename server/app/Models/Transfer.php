@@ -12,7 +12,7 @@ class Transfer extends Model
         'product_id',
         'warehouse_origin',
         'warehouse_destination',
-        'status',
+        'status','reason_id',
         'ip',
         'terminal',
         'user_id'

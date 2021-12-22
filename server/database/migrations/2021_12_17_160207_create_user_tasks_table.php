@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWarehouseProductsTable extends Migration
+class CreateUserTasksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateWarehouseProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('warehouse_products', function (Blueprint $table) {
+        Schema::create('user_tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('warehouse_id')->constrained('warehouses');
-            $table->integer('stock')->default(0);
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('task_id')->constrained('tasks');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateWarehouseProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('warehouse_products');
+        Schema::dropIfExists('user_tasks');
     }
 }

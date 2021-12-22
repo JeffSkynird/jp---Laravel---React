@@ -12,7 +12,8 @@ import Slide from '@material-ui/core/Slide';
 import { Checkbox, FormControlLabel, Grid, InputAdornment, Paper } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido } from '../../../../utils/API/pedidos';
 import { obtenerTodos } from '../../../../utils/API/proveedores';
-import { obtenerPropios, obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import { obtenerPorBodega, obtenerPropios, obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
@@ -33,14 +34,15 @@ export default function Crear(props) {
     const [producto, setProducto] = React.useState([])
     const [price, setPrice] = React.useState("")
     const [subTotalV, setSubTotalV] = React.useState(0)
-
+    const [bodegaData, setBodegaData] = React.useState([])
+    const [bodega, setBodega] = React.useState('')
     React.useEffect(() => {
-        if (initializer.usuario != null) {
+        if (initializer.usuario != null&&props.open) {
             obtenerTodos(setProveedorData, initializer)
-            obtenerPropios(setProductosData, initializer)
+            obtenerTodosBodegas(setBodegaData, initializer)
 
         }
-    }, [initializer.usuario])
+    }, [initializer.usuario,props.open])
     React.useEffect(() => {
         if (props.sistema != null) {
             setProductos([])
@@ -101,7 +103,7 @@ export default function Crear(props) {
         if(producto.length!=0!=""){
             let t = productos.slice()
             producto.map((e)=>{
-                t.push({product:e.name,supplier:obtenerProveedor(proveedor),product_id:e.id,quantity:cantidad,price:price,subtotal:cantidad*price})
+                t.push({serial:e.serial_code,product:e.name,supplier:obtenerProveedor(proveedor),product_id:e.id,quantity:cantidad,price:price,subtotal:cantidad*price})
 
             })
             setProductos(t)
@@ -142,6 +144,13 @@ export default function Crear(props) {
         setProducto([])
     }
 
+    const cargarInventario = (id) => {
+        if (id != '') {
+           setProductosData([])
+            obtenerPorBodega(id,setProductosData, initializer)
+        }
+
+    }
     return (
         <Dialog
         fullWidth
@@ -165,7 +174,33 @@ export default function Crear(props) {
                     {props.sistema != null ? "Formulario de edición de Compra" : "Formulario de creación de Compra"}
                 </DialogContentText>
                 <Grid container spacing={1}>
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={productosData.length!=0?6:12} style={{ display: 'flex' }}>
+                        <Autocomplete
+                            size="small"
+                            style={{ width: '100%' }}
+                            options={bodegaData}
+                            value={getName(bodega, bodegaData)}
+                            getOptionLabel={(option) => option.name+" - "+(option.supplier!=null?option.supplier:"JP")}
+                            onChange={(event, value) => {
+                                if (value != null) {
+
+                                    setBodega(value.id)
+                                    
+                                    cargarInventario(value.id)
+                                } else {
+                                    setBodega('')
+                                }
+
+                            }} // prints the selected value
+                            renderInput={params => (
+                                <TextField {...params} label="Seleccione una bodega" variant="outlined" fullWidth />
+                            )}
+                        />
+
+                    </Grid>
+                    {
+                        productosData.length!=0&&(
+                <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -184,7 +219,7 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-         
+                        )}
                   
                  
                  <Grid item xs={12} md={12}>
@@ -197,6 +232,13 @@ export default function Crear(props) {
                             field: 'product',
                             render: rowData => (
                              <span >{rowData.product}</span>
+                            ),editable: 'never'
+                          },
+                          {
+                            title: 'Código serial',
+                            field: 'serial',
+                            render: rowData => (
+                             <span >{rowData.serial}</span>
                             ),editable: 'never'
                           },
                         { title: "Cantidad", field: "quantity" },

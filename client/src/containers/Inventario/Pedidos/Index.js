@@ -58,7 +58,7 @@ export default function Sistemas(props) {
     }
     return (
         <Grid container spacing={2}>
-            <EditarPedido sistema={selected} setSelected={setSelected} setOpen={setOpen3} open={open3} carga={carga} />
+            <EditarPedido pedido={true} sistema={selected} setSelected={setSelected} setOpen={setOpen3} open={open3} carga={carga} />
 
               <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={() => {
                 autorizar(selected.id,initializer,carga)
@@ -72,6 +72,9 @@ export default function Sistemas(props) {
                 <Typography variant="h5" >
                     Pedidos
                 </Typography>
+                <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
+                    Nuevo
+                </Button>
             </Grid>
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
@@ -141,7 +144,7 @@ export default function Sistemas(props) {
                     localization={LocalizationTable}
 
                     actions={[
-                        {
+                     /*    {
                             icon: TableIcons.Edit,
                             tooltip: 'Editar',
 
@@ -150,7 +153,7 @@ export default function Sistemas(props) {
                                 rowData.id = rowData.task_id
                                 setSelected(rowData)
                             }
-                        },
+                        }, */
                         {
                             icon: TableIcons.AssignmentIndIcon,
                             tooltip: 'Autorizar',

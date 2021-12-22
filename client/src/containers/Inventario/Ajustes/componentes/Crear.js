@@ -10,10 +10,10 @@ import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
 import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
-import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido,obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
-import { obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
+import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido, obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
+import { obtenerTipoIngreso, obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
-import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import { obtenerPorBodega, obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
 import Crear from '../../Productos/componentes/Crear'
 
 import { Alert, Autocomplete } from '@material-ui/lab';
@@ -33,11 +33,12 @@ export default function Crearn(props) {
     const [inventario, setInventario] = React.useState([])
     const [productos, setProductos] = React.useState([])
     const [crearProducto, setCrearProducto] = React.useState(false)
-
+    const [incomeType, setIncomeType] = React.useState("")
+    const [incomeTypeData, setIncomeTypeData] = React.useState([])
 
     const [almacen, setAlmacen] = React.useState([])
     const [bodegaData, setBodegaData] = React.useState([])
-    const [bodegaO, setBodegaO] = React.useState('')
+    const [bodega, setBodega] = React.useState('')
     const [bodegaD, setBodegaD] = React.useState('')
     const [productosData, setProductosData] = React.useState([])
     const [producto, setProducto] = React.useState('')
@@ -48,26 +49,25 @@ export default function Crearn(props) {
         if (initializer.usuario != null) {
             obtenerRazones(setRazonData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
-            obtenerProductos(setProductosData, initializer)
-
+            obtenerTipoIngreso(setIncomeTypeData, initializer)
         }
-    }, [initializer.usuario ])
+    }, [initializer.usuario])
     React.useEffect(() => {
-        if (props.sistema != null&&props.open) {
+        if (props.sistema != null && props.open) {
             console.log(props.open)
             setProductos([])
             setAlmacen([])
-            obtenerInventarioOrden(props.sistema.id,setProductos, initializer)
+            obtenerInventarioOrden(props.sistema.id, setProductos, initializer)
 
 
         }
-    }, [props.sistema,props.open])
+    }, [props.sistema, props.open])
     const guardar = () => {
-        registrarUnidad({data:productos},initializer,limpiar)
+        registrarUnidad({ data: productos }, initializer, limpiar)
         props.setOpen(false)
     }
     const limpiar = () => {
-      
+
         setCantidad("")
         setRazon("")
         setProducto('')
@@ -79,8 +79,8 @@ export default function Crearn(props) {
         props.setOpen(false)
         props.carga()
     }
-   
-    const getName = (id,data) => {
+
+    const getName = (id, data) => {
         let object = null
         data.map((e) => {
             if (id == e.id) {
@@ -89,131 +89,132 @@ export default function Crearn(props) {
         })
         return object
     }
-    const validarData=()=>{
-        let final=[]
+    const validarData = () => {
+        let final = []
 
-        productos.map((e)=>{
-            
+        productos.map((e) => {
+
             if (!final.some(i => i.supplier_id === e.supplier_id)) {
                 final.push({
-                    supplier_id:e.supplier_id,
-                    products:obtenerProductosPorId(e.supplier_id)
+                    supplier_id: e.supplier_id,
+                    products: obtenerProductosPorId(e.supplier_id)
                 })
             }
-           
+
         })
         return final
     }
-    const obtenerProductosPorId=(id)=>{
-        return productos.filter((e)=>e.supplier_id==id)
+    const obtenerProductosPorId = (id) => {
+        return productos.filter((e) => e.supplier_id == id)
     }
-    const quitar=(row) => {
+    const quitar = (row) => {
         let id = row.tableData.id
         let t = productos.slice()
-      
 
-        setProductos(t.filter((e,i) =>i!=id))
+
+        setProductos(t.filter((e, i) => i != id))
         setCantidad('')
         setFraction('')
-        setRazon('')
+        
         setProducto('')
         setProductoC(null)
 
     }
 
 
-  
-    const obtenerBodega=(id)=> {
-        let nombre=""
-        bodegaData.map((e)=>{
-            if(e.id==id){
-                nombre=e.name
+
+    const obtenerBodega = (id) => {
+        let nombre = ""
+        bodegaData.map((e) => {
+            if (e.id == id) {
+                nombre = e.name
             }
         })
         return nombre
     }
-    const obtenerRazon=(id)=> {
-        let nombre=""
-        razonData.map((e)=>{
-            if(e.id==id){
-                nombre=e.name
+    const obtenerRazon = (id) => {
+        let nombre = ""
+        razonData.map((e) => {
+            if (e.id == id) {
+                nombre = e.name
             }
         })
         return nombre
     }
-   
-    const quitarInventario=(row) => {
-    
-       let t = [];
-       inventario.slice().map((e,i) =>{
-           if(!estaIncluido(e.inventory_id,row)){
-            t.push({...e})
-           }
-       })
-       setInventario(t)
-       
+
+    const quitarInventario = (row) => {
+
+        let t = [];
+        inventario.slice().map((e, i) => {
+            if (!estaIncluido(e.inventory_id, row)) {
+                t.push({ ...e })
+            }
+        })
+        setInventario(t)
+
     }
-    const estaIncluido=(id,dt) => {
+    const estaIncluido = (id, dt) => {
         let res = false
-        dt.map((e,i) =>{
-            if(e.inventory_id==id){
+        dt.map((e, i) => {
+            if (e.inventory_id == id) {
                 res = true
             }
         })
         return res
     }
-    
-    const cargarInventario=(id)=>{
-        if (id!=''){
-            setInventario([])
-            obtenerInventario(id,setInventario,initializer)
+
+    const cargarInventario = (id) => {
+        if (id != '') {
+            setProductosData([])
+            obtenerPorBodega(id,setProductosData, initializer)
         }
-  
+
     }
-    const existeEnDetalle=(id)=>{
+    const existeEnDetalle = (id) => {
         let exs = false
-        productos.map((e)=>{
-          if(e.product_id==id){
-              exs=true
-          }  
+        productos.map((e) => {
+            if (e.product_id == id) {
+                exs = true
+            }
         })
         return exs
     }
-    const agregar=() => {
-        if(producto!=""&&razon!=""&&cantidad!=""&&cantidad>0&&cantidad>0){
-            let outStock=false
+    const agregar = () => {
+        if (producto != "" && razon != "" && incomeType != "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
+            let outStock = false
             let t = productos.slice()
-           
-                if(!existeEnDetalle(productoC.id)){
-                    let frac = ((cantidad % 1)*productoC.fraction).toFixed(1)*1
-                   
-                    let unity =cantidad-(cantidad % 1)
-               
-                if(razon==2){
-                    if((productoC.stock-cantidad)>=0){
-                        t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
-                        }else{
-                            outStock=true
-                        }
-                }else{
-                    t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+
+            if (!existeEnDetalle(productoC.id)) {
+                let frac = ((cantidad % 1) * productoC.fraction).toFixed(1) * 1
+
+                let unity = cantidad - (cantidad % 1)
+
+                if (incomeType == 'E') {
+                    if ((productoC.stock - cantidad) >= 0) {
+                        t.push({ unity: unity, fraction: frac, product: productoC.name, serial_code: productoC.serial_code, bar_code: productoC.bar_code, stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
+                    } else {
+                        outStock = true
+                    }
+                } else {
+                    t.push({ serial_code: productoC.serial_code, unity: unity, fraction: frac, product: productoC.name, bar_code: productoC.bar_code, stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
 
                 }
             }
-         
+           
             setProductos(t)
             setCantidad('')
             setFraction('')
+         
             setProducto('')
             setProductoC(null)
-            if(outStock){
+            if (outStock) {
                 initializer.mostrarNotificacion({ type: "warning", message: 'No hay suficiente stock' });
             }
-        }else{
+        } else {
             initializer.mostrarNotificacion({ type: "warning", message: 'No deje campos vacíos' });
 
         }
-       
+
     }
     const getName2 = (id) => {
         let object = null
@@ -230,7 +231,7 @@ export default function Crearn(props) {
             return 0
         }
         if (modi == 'cantidad') {
-            if (val > obj.stock&&razon==2) {
+            if (val > obj.stock && razon == 2) {
                 return 0
             } else {
                 let fr = obj.fraction
@@ -242,30 +243,30 @@ export default function Crearn(props) {
             console.log("valor cambiar" + val)
             let temp = obj.stock * obj.fraction
             console.log("valor maximo" + temp)
-            if (val > temp&&razon==2) {
+            if (val > temp && razon == 2) {
                 return 0
             } else {
                 let decT = (val * 1) / obj.fraction
-               
 
-             
+
+
                 return decT
             }
         }
 
     }
-    const obtenerFraccionUnidades=(cantidad,fraccion)=>{
-        let frac = ((cantidad % 1)*fraccion).toFixed(1)*1
-        let unity =cantidad-(cantidad % 1)
+    const obtenerFraccionUnidades = (cantidad, fraccion) => {
+        let frac = ((cantidad % 1) * fraccion).toFixed(1) * 1
+        let unity = cantidad - (cantidad % 1)
 
-        return {unity,frac}
+        return { unity, frac }
 
     }
     return (
         <Dialog
-        fullWidth
-        maxWidth='lg'
-        fullScreen
+            fullWidth
+            maxWidth='lg'
+            fullScreen
             open={props.open}
             TransitionComponent={Transition}
             keepMounted
@@ -276,38 +277,38 @@ export default function Crearn(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-              <Crear sistema={null} setSelected={()=>null} setOpen={setCrearProducto} open={crearProducto} carga={()=>{
-                 obtenerProductos(setProductosData, initializer)
-         }} />
+            <Crear sistema={null} setSelected={() => null} setOpen={setCrearProducto} open={crearProducto} carga={() => {
+                obtenerProductos(setProductosData, initializer)
+            }} />
             <DialogTitle id="alert-dialog-slide-title">Ajuste</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
                     Seleccione los productos y cantidades a ajustar
                 </DialogContentText>
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={6} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
                             size="small"
-                            options={razonData}
-                            
-                            value={getName2(razon)}
+                            options={incomeTypeData}
+
+                            value={getName(incomeType, incomeTypeData)}
                             onChange={(event, newValue) => {
-                              
+
                                 if (newValue != null) {
 
-                                    setRazon(newValue.id);
+                                    setIncomeType(newValue.id);
                                 } else {
 
-                                    setRazon('')
+                                    setIncomeType('')
 
                                 }
-                              }}
-                            getOptionLabel={(option) =>option.name}
-                         // prints the selected value
+                            }}
+                            getOptionLabel={(option) => option.name}
+                            // prints the selected value
                             renderInput={params => (
-                                <TextField    variant="outlined" {...params} label="Seleccione un tipo" variant="outlined" fullWidth />
+                                <TextField variant="outlined" {...params} label="Seleccione un tipo" variant="outlined" fullWidth />
                             )}
                         />
 
@@ -317,33 +318,89 @@ export default function Crearn(props) {
 
                             style={{ width: '100%' }}
                             size="small"
-                            options={productosData}
-                            value={getName(producto, productosData)}
+                            options={razonData}
 
+                            value={getName2(razon)}
                             onChange={(event, newValue) => {
+
                                 if (newValue != null) {
 
-                                    setProducto(newValue.id);
-                                    setProductoC(newValue)
-                                    setCantidad(1)
-                                    setFraction(newValue.fraction)
+                                    setRazon(newValue.id);
                                 } else {
-                                    setProductoC(null)
-                                    setProducto('')
+
+                                    setRazon('')
 
                                 }
                             }}
-                            getOptionLabel={(option) => option.bar_code + " - " + option.name + " - stock: " +option.stock}
+                            getOptionLabel={(option) => option.name}
                             // prints the selected value
                             renderInput={params => (
-                                <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
+                                <TextField variant="outlined" {...params} label="Seleccione un motivo" variant="outlined" fullWidth />
                             )}
                         />
 
                     </Grid>
-                    <Grid item xs={12} md={12}>    <TextField
+                    <Grid item xs={12} md={productosData.length!=0?6:12} style={{ display: 'flex' }}>
+                        <Autocomplete
+                            size="small"
+                            style={{ width: '100%' }}
+                            options={bodegaData}
+                            value={getName(bodega, bodegaData)}
+                            getOptionLabel={(option) => option.name+" - "+(option.supplier!=null?option.supplier:"JP")}
+                            onChange={(event, value) => {
+                                if (value != null) {
+
+                                    setBodega(value.id)
+                                    
+                                    cargarInventario(value.id)
+                                } else {
+                                    setBodega('')
+                                }
+
+                            }} // prints the selected value
+                            renderInput={params => (
+                                <TextField {...params} label="Seleccione una bodega" variant="outlined" fullWidth />
+                            )}
+                        />
+
+                    </Grid>
+                    {
+                        productosData.length!=0&&(
+                            <Grid item xs={12} md={6} style={{ display: 'flex' }}>
+                            <Autocomplete
+    
+                                style={{ width: '100%' }}
+                                size="small"
+                                options={productosData}
+                                value={getName(producto, productosData)}
+    
+                                onChange={(event, newValue) => {
+                                    if (newValue != null) {
+    
+                                        setProducto(newValue.id);
+                                        setProductoC(newValue)
+                                        setCantidad(1)
+                                        setFraction(newValue.fraction)
+                                    } else {
+                                        setProductoC(null)
+                                        setProducto('')
+    
+                                    }
+                                }}
+                                getOptionLabel={(option) => option.bar_code + " - " + option.name + " - stock: " + option.stock}
+                                // prints the selected value
+                                renderInput={params => (
+                                    <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
+                                )}
+                            />
+    
+                        </Grid>
+                        )
+                    }
+                  
+                    <Grid item xs={12} md={16}>    <TextField
                         variant="outlined"
-                        style={{  width: '100%' }}
+                        style={{ width: '100%' }}
                         type="number"
                         size="small"
                         label="Cantidad"
@@ -352,103 +409,130 @@ export default function Crearn(props) {
                         onChange={(e) => {
                             setCantidad(e.target.value)
 
-                      
-                          
-                           
-                           
+
+
+
+
                         }}
 
                     /></Grid>
-                
-
-                   
-                 
-                 <Grid item xs={12} md={12}>
-
-                 <MaterialTable
-                 key={1}
-                 id={1}
-                    icons={TableIcons}
-                    columns={[
-                 
-
-                        {
-                            title: 'Producto',
-                            field: 'product',
-                            render: rowData => (
-                             <span >{rowData.product}</span>
-                            ),
-                          },
-                        { title: "Código de Barras", field: "bar_code" },
-                        { title: "Cantidad", field: "unity", editable: 'never' },
-                        { title: "Tipo", field: "reason" }
-
-                
 
 
-
-                    ]}
-                    data={
-                        productos
-                    }
-                    title="Productos a ajustar"
-                   
-                    localization={LocalizationTable}
-                    actions={[      {
-                        icon: TableIcons.Add,
-                        tooltip: 'Agregar',
-                        isFreeAction:true,
-                        onClick: (event, rowData) => {
-                            if(razon==1){
-                                agregar()
-
-                            }else{
-                                if(cantidad<=productoC.stock){
-                                    agregar()
-
-                                }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'Insuficiente stock' });
-    
-                                }
-                            }
-                         
-
-                      
-                        }
-                    },
-                    {
-                        icon: TableIcons.Delete,
-                        tooltip: 'Eliminar',
-                     
-                        onClick: (event, rowData) => {
-                          quitar(rowData)
-                        }
-                    }]}
                   
 
-                    options={{
-                        pageSize:10,
-                        paging:false,
-                        search:false,
-                     
-                        actionsColumnIndex: -1,
-                        width:'100%',
-                        maxBodyHeight: 150,
-                        padding: 'dense',
-                        headerStyle: {
-                            textAlign: 'left'
-                        },
-                        cellStyle: {
-                            textAlign: 'left'
-                        },
-                        searchFieldStyle: {
+                    <Grid item xs={12} md={12}>
 
-                            padding: 5
-                        }
-                    }}
+                        <MaterialTable
+                            key={1}
+                            id={1}
+                            icons={TableIcons}
+                            columns={[
 
-                />
-</Grid>
+
+                                {
+                                    editable:'never',
+                                    title: 'Producto',
+                                    field: 'product',
+                                    render: rowData => (
+                                        <span >{rowData.product}</span>
+                                    ),
+                                },
+                                {editable:'never', title: "Código de Barras", field: "bar_code" },
+                                {editable:'never', title: "Código serial", field: "serial_code" },
+
+                                { title: "Cantidad", field: "unity" },
+                                { editable:'never',title: "Tipo", field: "status", render: rowData => (<span >{rowData.status == 'E' ? 'Egreso' : 'Ingreso'}</span>), editable: 'never' },
+                                { title: "Motivo", field: "reason", editable: 'never' },
+
+
+
+
+
+                            ]}
+                            data={
+                                productos
+                            }
+                            title="Productos a ajustar"
+                            cellEditable={{
+                                onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
+                                    return new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            if (newValue !== "") {
+                                                if (newValue >= 0) {
+                                                    const dataUpdate = [...productos];
+            
+                                                    const index = rowData.tableData.id;
+                                                    if(newValue>parseInt(dataUpdate[index].stock)&&(dataUpdate[index].status=="E")){
+                                                        initializer.mostrarNotificacion({ type: "warning", message: 'Stock insuficiente' });
+                                                    }else{
+                                                        dataUpdate[index][columnDef.field] = newValue;
+                                                        setProductos([...dataUpdate]);
+                                                    }
+
+            
+                                                }
+                                            }
+                                            resolve();
+                                        }, 1000)
+                                    });
+                                }
+                            }}
+                            localization={LocalizationTable}
+                            actions={[{
+                                icon: TableIcons.Add,
+                                tooltip: 'Agregar',
+                                isFreeAction: true,
+                                onClick: (event, rowData) => {
+                                    if (razon == 1) {
+                                        agregar()
+
+                                    } else {
+                                        if (cantidad <= productoC.stock) {
+                                            agregar()
+
+                                        } else {
+                                            initializer.mostrarNotificacion({ type: "warning", message: 'Insuficiente stock' });
+
+                                        }
+                                    }
+
+
+
+                                }
+                            },
+                            {
+                                icon: TableIcons.Delete,
+                                tooltip: 'Eliminar',
+
+                                onClick: (event, rowData) => {
+                                    quitar(rowData)
+                                }
+                            }]}
+
+
+                            options={{
+                                pageSize: 10,
+                                paging: false,
+                                search: false,
+
+                                actionsColumnIndex: -1,
+                                width: '100%',
+                                maxBodyHeight: 150,
+                                padding: 'dense',
+                                headerStyle: {
+                                    textAlign: 'left'
+                                },
+                                cellStyle: {
+                                    textAlign: 'left'
+                                },
+                                searchFieldStyle: {
+
+                                    padding: 5
+                                }
+                            }}
+
+                        />
+                    </Grid>
 
 
                 </Grid>
@@ -456,12 +540,12 @@ export default function Crearn(props) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => {
-                      limpiar()
+                    limpiar()
                 }} color="default">
                     Cancelar
                 </Button>
-                <Button color="primary" disabled={productos.length==0} onClick={()=>{
-                  guardar()
+                <Button color="primary" disabled={productos.length == 0} onClick={() => {
+                    guardar()
                 }}>
                     Guardar
                 </Button>

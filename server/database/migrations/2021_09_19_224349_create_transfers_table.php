@@ -19,6 +19,7 @@ class CreateTransfersTable extends Migration
             $table->foreignId('warehouse_origin')->constrained('warehouses');
             $table->foreignId('warehouse_destination')->constrained('warehouses');
             $table->enum('status', ['A', 'P','C'])->default('P');
+            $table->foreignId('reason_id')->constrained('reasons');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');

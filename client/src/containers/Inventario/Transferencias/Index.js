@@ -105,6 +105,8 @@ export default function Sistemas(props) {
                         { title: "Código de barras", field: "bar_code" },
                         { title: "Bodega origen", field: "warehouse_origin" },
                         { title: "Bodega destino", field: "warehouse_destination" },
+                        { title: "Motivo", field: "reason" },
+
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -115,24 +117,7 @@ export default function Sistemas(props) {
 
                     localization={LocalizationTable}
 
-                    actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
-
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-                        {
-                            icon: TableIcons.Filter,
-                            tooltip: 'Filtrar',
-                            isFreeAction: true,
-                            onClick: (event) => setOpenFilter(true)
-                        }
-
-                    ]}
+                    
 
                     options={{
                         pageSize: 10,

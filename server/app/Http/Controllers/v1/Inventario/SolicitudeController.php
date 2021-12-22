@@ -40,14 +40,14 @@ class SolicitudeController extends Controller
             $data->authorized_by = 1;
             $data->save();
             //RESTAR DE INVENTARIO
-            $soli  = SolicitudeProduct::where('solicitude_id',$id)->get();
+        /*     $soli  = SolicitudeProduct::where('solicitude_id',$id)->get();
             foreach ($soli as $value) {
                 $pro = Product::find($value->product_id);
                 if(!is_null($pro)){
                     $pro->stock = $pro->stock - $value->quantity;
                     $pro->save();
                 }
-            }
+            } */
             return response()->json([
                 "status" => "200",
                 "message" => 'Solicitud autorizada con éxito',
@@ -65,7 +65,31 @@ class SolicitudeController extends Controller
     public function create(Request $request)
     {
         try {
-            Solicitude::create($request->all());
+                 //CREO MATERIALES
+            $products = $request->input('products');
+            $taskId = $request->input('task_id');
+            $autorization = $request->input('autorize');
+            if (count($products) != 0) {
+                $soli = Solicitude::create([
+                    'task_id' => $taskId,
+                    'warehouse_id' => $request->input('warehouse_id'),
+                    'user_id' => 1,
+                    'status' => 'P'
+                ]);
+                if($autorization!=null){
+                    $data = Solicitude::find($soli->id);
+                    $data->authorized_by = 1;
+                    $data->save();
+                }
+
+                foreach ($products as $sub) {
+                    SolicitudeProduct::create([
+                        'solicitude_id' => $soli->id,
+                        'product_id' => $sub['id'],
+                        'quantity' => $sub['quantity']
+                    ]);
+                }
+            }  
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',

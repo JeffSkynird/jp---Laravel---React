@@ -12,15 +12,13 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
-
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { obtenerTodos } from '../../../utils/API/bodegas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
-
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
 
@@ -41,10 +39,10 @@ export default function Sistemas(props) {
         setSelected(null)
         setSelected2(null)
     }
-    const total=()=>{
-        let tot=0
-        data.map((e)=>{
-            tot+=e.evaluaciones
+    const total = () => {
+        let tot = 0
+        data.map((e) => {
+            tot += e.evaluaciones
         })
         return tot
     }
@@ -52,20 +50,20 @@ export default function Sistemas(props) {
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Filtro setOpen={setOpenFilter} open={openFilter}  />
+            <Filtro setOpen={setOpenFilter} open={openFilter} />
 
-            <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
+            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h5" >
                     Bodegas
                 </Typography>
                 <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                        Nuevo
-                    </Button>
+                    Nuevo
+                </Button>
             </Grid>
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.12)', borderWidth: 1, borderStyle: 'solid' }} elevation={0}>
                     <CardContent>
                         <Typography variant="subtitle1" gutterBottom>
                             Totales
@@ -80,81 +78,78 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-               
+
             </Grid>
-      
-            <Grid item xs={12}>
-                <MaterialTable
-                    icons={TableIcons}
-                    columns={[
-                      
-                        { title: "Nombre", field: "name" },
-                        { title: "Descripción", field: "description" },
-                        { title: "Zona", field: "zone" },
-                        { title: "Productos", field: "products" },
-                        { title: "Propia", field: "is_own", render: rowData => <div>{rowData.is_own==1 ? 'Si' : 'No'}</div> },
 
-                        {title:"Cliente",field:"supplier",render:rowData=><span>{rowData.supplier!=null?rowData.supplier:"N/A"}</span>},
-                        { title: "Registro", field: "created_at", type: "datetime" },
+            
+            
+                <Grid item xs={12}>
+                    <MaterialTable
+                        icons={TableIcons}
+                        columns={[
+
+                            { title: "Nombre", field: "name" },
+                            { title: "Descripción", field: "description" },
+                            { title: "Zona", field: "zone" },
+                            { title: "Productos", field: "products" },
+                            { title: "Propia", field: "is_own", render: rowData => <div>{rowData.is_own == 1 ? 'Si' : 'No'}</div> },
+
+                            { title: "Cliente", field: "supplier", render: rowData => <span>{rowData.supplier != null ? rowData.supplier : "N/A"}</span> },
+                            { title: "Registro", field: "created_at", type: "datetime" },
 
 
-                    ]}
-                    data={
-                        data
-                    }
-
-                    localization={LocalizationTable}
-
-                    actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
-
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-
-                        {
-                            icon: TableIcons.Delete,
-                            tooltip: "Borrar",
-
-                            onClick: (event, rowData) => {
-                                setSelected2(rowData)
-                                setOpen2(true)
-                            }
-                        },
-                        {
-                            icon: TableIcons.Filter,
-                            tooltip: 'Filtrar',
-                            isFreeAction: true,
-                            onClick: (event) => setOpenFilter(true)
-                          }
-
-                    ]}
-
-                    options={{
-                        pageSize:10,
-                        showTitle: false,
-                        actionsColumnIndex: -1,
-                      
-                        maxBodyHeight: 350,
-                        padding: 'dense',
-                        headerStyle: {
-                            textAlign: 'left'
-                        },
-                        cellStyle: {
-                            textAlign: 'left'
-                        },
-                        searchFieldStyle: {
-
-                            padding: 5
+                        ]}
+                        data={
+                            data
                         }
-                    }}
 
-                />
+                        localization={LocalizationTable}
+
+                        actions={[
+                            {
+                                icon: TableIcons.Edit,
+                                tooltip: 'Editar',
+
+                                onClick: (event, rowData) => {
+                                    setSelected(rowData)
+                                    setOpen(true)
+                                }
+                            },
+
+                            {
+                                icon: TableIcons.Delete,
+                                tooltip: "Borrar",
+
+                                onClick: (event, rowData) => {
+                                    setSelected2(rowData)
+                                    setOpen2(true)
+                                }
+                            },
+                       
+
+                        ]}
+
+                        options={{
+                            pageSize: 10,
+                            showTitle: false,
+                            actionsColumnIndex: -1,
+
+                            maxBodyHeight: 350,
+                            padding: 'dense',
+                            headerStyle: {
+                                textAlign: 'left'
+                            },
+                            cellStyle: {
+                                textAlign: 'left'
+                            },
+                            searchFieldStyle: {
+
+                                padding: 5
+                            }
+                        }}
+
+                    />
+                </Grid>
             </Grid>
-        </Grid>
-    )
+            )
 }

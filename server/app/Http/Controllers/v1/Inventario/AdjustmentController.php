@@ -16,7 +16,7 @@ class AdjustmentController extends Controller
         
             $data = Adjustment::join('products', 'adjustments.product_id', '=', 'products.id')
             ->join('reasons', 'adjustments.reason_id', '=', 'reasons.id')
-            ->selectRaw('products.name,products.bar_code,products.stock,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
+            ->selectRaw('products.name,adjustments.status,products.bar_code,products.stock,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
             return json_encode([
                 "status" => "200",
                 'data'=>$data,
@@ -41,12 +41,12 @@ class AdjustmentController extends Controller
                     'product_id' => $val['product_id'],
                     'reason_id' => $val['reason_id'],
                     'quantity'=> $val['quantity'],
-                    'status'=>'I',
+                    'status'=>$val['status'],
                     'user_id'=> Auth::id()
                 ]);
                $ord = Product::find($val['product_id']);
                if($ord!=null){
-                   if($val['reason_id']==1){
+                   if($val['status']=='I'){
                        $ord->stock = doubleval($ord->stock) + doubleval($val['quantity']);
                        $ord->save();
                        

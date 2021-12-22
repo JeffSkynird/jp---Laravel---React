@@ -145,6 +145,24 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('users', 'App\Http\Controllers\v1\Seguridad\UsuarioController@index');
     Route::get('users/{id}', 'App\Http\Controllers\v1\Seguridad\UsuarioController@show');
     Route::delete('users/{id}', 'App\Http\Controllers\v1\Seguridad\UsuarioController@delete'); 
+
+    Route::get('income_type', 'App\Http\Controllers\v1\Inventario\ReasonController@incomeType');
+    Route::get('notification/menu', 'App\Http\Controllers\v1\Reporte\NotificationController@index');
+
+    
+    
+    Route::get('kpis', 'App\Http\Controllers\v1\Reporte\DashboardController@kpis');
+    Route::get('warehouse_by_products', 'App\Http\Controllers\v1\Reporte\DashboardController@totalProductosPorBodega');
+    Route::get('tasks_status', 'App\Http\Controllers\v1\Reporte\DashboardController@totalTareasCompletadas');
+    Route::get('solicitudes_status', 'App\Http\Controllers\v1\Reporte\DashboardController@pedidosAutorizados');
+
+    Route::get('income_expense', 'App\Http\Controllers\v1\Reporte\DashboardController@incomeByExpense');
+    Route::get('last_total_orders', 'App\Http\Controllers\v1\Reporte\DashboardController@comprasUltimos6Meses');
+
+    Route::get('tasks/users/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@showUsersAsiggned');
+    Route::post('solicitude', 'App\Http\Controllers\v1\Inventario\SolicitudeController@create');
+
+    
     Route::middleware('auth:api')->group(function () {
       
 

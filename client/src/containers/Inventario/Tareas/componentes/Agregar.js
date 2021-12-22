@@ -10,7 +10,8 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
-import { editarSistema, obtenerPorBodega, registrarSistema } from '../../../../utils/API/sistemas';
+import { editarSistema, registrarSistema, subirFoto ,obtenerTodos} from '../../../../utils/API/sistemas';
+
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
 import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
@@ -31,7 +32,7 @@ export default function Crear(props) {
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
-            obtenerPorBodega(props.bodega,setUnityData, initializer)
+            obtenerTodos(setUnityData, initializer)
         }
     }, [initializer.usuario,props.bodega])
     const getName = (id, data) => {
@@ -83,7 +84,7 @@ export default function Crear(props) {
                             style={{ width: '100%' }}
                             options={unityData}
                             value={getName(unity, unityData)}
-                            getOptionLabel={(option) => option.name+" - stock: "+option.stock}
+                            getOptionLabel={(option) => option.name}
                             onChange={(event, value) => {
                                 if (value != null) {
 
