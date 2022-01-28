@@ -84,7 +84,7 @@ export default function Crear(props) {
                             style={{ width: '100%' }}
                             options={unityData}
                             value={getName(unity, unityData)}
-                            getOptionLabel={(option) => option.name}
+                            getOptionLabel={(option) => option.serial_code+" - "+option.name}
                             onChange={(event, value) => {
                                 if (value != null) {
 

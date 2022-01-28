@@ -17,7 +17,6 @@ class CreateWarehouseProductsTable extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('warehouse_id')->constrained('warehouses');
-            $table->integer('stock')->default(0);
             $table->timestamps();
         });
     }

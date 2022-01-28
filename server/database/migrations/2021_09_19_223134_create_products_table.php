@@ -15,20 +15,13 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('jp_code');
-            $table->string('bar_code');
-            $table->string('serial_code');
-            $table->string('name');
-            $table->string('image')->nullable();
+            $table->string('client_code')->nullable();
+            $table->string('serial_code')->nullable();
             $table->text('description')->nullable();
             $table->integer('stock')->default(0);
-            $table->integer('min_stock')->nullable();
             $table->double('price', 15, 8)->default(0);
-            $table->integer('max_stock')->nullable();
-            $table->foreignId('unity_id')->constrained('unities');
-            $table->foreignId('category_id')->constrained('categories');
-            $table->foreignId('warehouse_id')->constrained('warehouses');
-            $table->boolean('status')->default(1);
+            $table->foreignId('item_id')->constrained('items');
+            $table->foreignId('unity_id')->nullable()->constrained('unities');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');

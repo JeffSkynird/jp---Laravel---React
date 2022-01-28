@@ -75,7 +75,7 @@ export default function IconLabelTabs(props) {
                 showLabels
 
             >
-                <BottomNavigationAction label="Compras" icon={<ShoppingCartIcon />} />
+                <BottomNavigationAction label="Propia" icon={<ShoppingCartIcon />} />
                 <BottomNavigationAction label="Clientes" icon={<AssignmentIndIcon />} />
 
             </BottomNavigation>

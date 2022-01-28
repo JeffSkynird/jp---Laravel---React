@@ -16,10 +16,12 @@ class CreateReasonsTable extends Migration
         Schema::create('reasons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('module_id')->constrained('modules');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

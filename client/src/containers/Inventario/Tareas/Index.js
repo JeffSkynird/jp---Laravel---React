@@ -17,7 +17,7 @@ import Initializer from '../../../store/Initializer'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid, IconButton } from '@material-ui/core';
+import { Chip, Grid, IconButton } from '@material-ui/core';
 import { obtenerTodos } from '../../../utils/API/tareas';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
@@ -110,7 +110,7 @@ export default function Sistemas(props) {
                                 { title: 'Número', field: 'id' },
                                 { title: "Destino", field: "business_name", render: rowData => <span>{rowData.business_name != null ? rowData.business_name : 'JP'}</span> },
                                 { title: "Descripción", field: "description" },
-                                { title: "Completa", field: "is_complete", render: rowData => rowData.is_complete ? <span style={{ backgroundColor: 'green', borderRadius: 10, padding: 5, color: 'white' }}>Completa</span> : <span style={{ backgroundColor: 'gray', borderRadius: 10, padding: 5, color: 'white' }}>Incompleta</span> },
+                                { title: "Completa", field: "is_complete", render: rowData => rowData.is_complete ? <Chip label="Completa" color="primary" />  :<Chip label="Incompleta" color="default" />},
                                 { title: "Fecha inicio", field: "init_date", type: "date" },
                                 { title: "Fecha fin", field: "final_date", type: "date" },
 

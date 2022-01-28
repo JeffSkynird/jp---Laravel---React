@@ -10,22 +10,15 @@ class Product extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
-        'jp_code',
-        'bar_code',
-        'name',
-        'image',
+        'client_code',
+        'serial_code',
         'description',
         'stock',
-        'min_stock',
         'price',
-        'serial_code',
-        'max_stock',
+        'item_id',
         'unity_id',
-        'status',
-        'category_id',
         'ip',
         'terminal',
-        'user_id',
-        'warehouse_id'
+        'user_id'
     ];
 }

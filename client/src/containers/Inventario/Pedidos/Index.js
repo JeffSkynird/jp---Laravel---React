@@ -15,7 +15,7 @@ import Initializer from '../../../store/Initializer'
 
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid } from '@material-ui/core';
+import { Chip, Grid } from '@material-ui/core';
 import { autorizar, obtenerTodos } from '../../../utils/API/solicitues';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
@@ -24,10 +24,12 @@ import { PUBLIC_PATH } from '../../../config/API';
 import Confirmar from '../../../components/Confirmar'
 import EditarPedido from '../Tareas/componentes/Crear'
 import { printVoucher } from '../../../utils/API/reporte';
+import CambiarEstado from  './componentes/CambiarEstado'
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
     const [imageSelected, setImageSelected] = React.useState(null)
     const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
+    const [confirmarMensaje2, setConfirmarMensaje2] = React.useState(false)
 
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
@@ -64,6 +66,8 @@ export default function Sistemas(props) {
                 autorizar(selected.id,initializer,carga)
                 setConfirmarMensaje(false)
             }} titulo='¿Está seguro de autorizar el pedido?' />
+
+              <CambiarEstado open={confirmarMensaje2} setOpen={setConfirmarMensaje2}  selected={selected} setSelected={setSelected} carga={carga}/>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
             <Filtro setOpen={setOpenFilter} open={openFilter}  />
@@ -135,6 +139,7 @@ export default function Sistemas(props) {
                         { title: "Tarea", field: "task_name" },
                         { title: "Solicitado por", field: "solicited"  },
                         { title: "Autorizado por", field: "authorized",render:rowData=>rowData.authorized?rowData.authorized:'N/A' },  
+                        { title: "Estado entreado", field: "status" ,render:rowData=>rowData.status=='A'?<Chip label="Pendiente" color="default" />:(rowData.status=='C'?<Chip label="Entregado" color="primary" style={{backgroundColor:'#27ae60'}} />:<Chip label="Parc. Entregado" color="secondary" />)},
                         { title: "Registro", field: "created_at", type: "datetime" },
                     ]}
                     data={
@@ -164,6 +169,20 @@ export default function Sistemas(props) {
                                     setSelected(rowData)
                                 }else{
                                     initializer.mostrarNotificacion({ type: "warning", message: 'El pedido ya ha sido autorizado' });
+                                }
+                               
+                            }
+                        },
+                        {
+                            icon: TableIcons.Check,
+                            tooltip: 'Estado',
+
+                            onClick: (event, rowData) => {
+                                if(rowData.authorized_by!=null){
+                                    setConfirmarMensaje2(true)
+                                    setSelected(rowData)
+                                }else{
+                                    initializer.mostrarNotificacion({ type: "warning", message: 'El pedido no ha sido autorizado' });
                                 }
                                
                             }

@@ -1,6 +1,6 @@
-export const ENTRYPOINT="http://localhost:8000/api/v1/"
-export const LARAVEL_SGI="http://localhost:8000/api/v1/"
-export const PUBLIC_PATH="http://localhost:8000/"
+export const ENTRYPOINT="http://192.168.0.111:80/api/v1/"
+export const LARAVEL_SGI="http://localhost/api/v1/"
+export const PUBLIC_PATH="http://192.168.0.111:80/"
 
 
 /*

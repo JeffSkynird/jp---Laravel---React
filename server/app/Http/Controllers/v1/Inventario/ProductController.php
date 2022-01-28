@@ -20,13 +20,25 @@ class ProductController extends Controller
         }
 
     }
-    public function index()
+    public function index(Request $request)
     {
         try {
-  
-            $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-    ->select('products.*','unities.name as unity','categories.name as category')->orderBy('id','desc')->get();
+            $w = $request->input('warehouse_id');
+            if(is_null($w)){
+                $data = Product::leftjoin('unities', 'products.unity_id', '=', 'unities.id')
+                ->join('items', 'products.item_id', '=', 'items.id')
+                ->join('categories', 'items.category_id', '=', 'categories.id')
+        ->select('products.*','items.name','unities.name as unity','categories.name as category','items.image as image')->orderBy('id','desc')->get();
+            }else{
+           
+                $data = Product::leftjoin('unities', 'products.unity_id', '=', 'unities.id')
+                ->join('items', 'products.item_id', '=', 'items.id')
+                ->join('warehouse_products', 'products.id', '=', 'warehouse_products.product_id')
+                ->join('categories', 'items.category_id', '=', 'categories.id')
+                ->where('warehouse_products.warehouse_id',$w)
+        ->select('products.*','items.name','unities.name as unity','categories.name as category','items.image as image')->orderBy('id','desc')->get();
+            }
+          
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

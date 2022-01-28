@@ -40,19 +40,21 @@ class OrderController extends Controller
             ]);
         }
     }
-    public function createDetailOrder($product, $quantity,$price,$subt, $order)
+    public function createDetailOrder($val,$quantity,$price,$subt, $order)
     {
+        $val['user_id']=Auth::id();
+        $pro = Product::create($val);
         OrderProduct::create([
             'order_id' => $order,
             'quantity' => $quantity,
             'price' => $price!=null?$price:0,
             'subtotal' => $subt!=null?$subt:0,
-            'product_id' => $product
+            'product_id' => $pro->id,
         ]);
-        $product = Product::find($product);
-        $product->stock = $product->stock + $quantity;
-        $product->price =$price!=null?$price:0;
-        $product->save();
+        WarehouseProduct::create([
+            'product_id'=>$pro->id,
+            'warehouse_id'=>$val['warehouse_id'],
+        ]);
     }
     public function obtenerDetallePedido($id)
     {
@@ -126,7 +128,7 @@ class OrderController extends Controller
             ]);
 
             foreach ($data['products'] as $val) {
-                $this->createDetailOrder($val['product_id'], $val['quantity'],$val['price'],$val['subtotal'], $order->id);
+                $this->createDetailOrder($val, $val['stock'],$val['price'],$val['subtotal'], $order->id);
 
             }
          
@@ -274,7 +276,7 @@ class OrderController extends Controller
                     'authorized_by' => !is_null($data['authorize']) ? ($data['authorize'] == 1 ? $idUser : null) : null
                 ]);
                 foreach ($val['products'] as $val2) {
-                    $this->createDetailOrder($val2['product_id'], $val2['quantity'], $order->id);
+                    $this->createDetailOrder($val, $val['stock'],$val['price'],$val['subtotal'], $order->id);
                 }
             }
             return response()->json([

@@ -15,7 +15,7 @@ import { obtenerTipoIngreso, obtenerTodos as obtenerRazones } from '../../../../
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 import { obtenerPorBodega, obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
 import Crear from '../../Productos/componentes/Crear'
-
+import { obtenerTodosParam } from '../../../../utils/API/sistemas.js';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
@@ -50,6 +50,7 @@ export default function Crearn(props) {
             obtenerRazones(setRazonData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
             obtenerTipoIngreso(setIncomeTypeData, initializer)
+            obtenerTodosParam({},setProductosData,initializer)
         }
     }, [initializer.usuario])
     React.useEffect(() => {
@@ -191,12 +192,12 @@ export default function Crearn(props) {
 
                 if (incomeType == 'E') {
                     if ((productoC.stock - cantidad) >= 0) {
-                        t.push({ unity: unity, fraction: frac, product: productoC.name, serial_code: productoC.serial_code, bar_code: productoC.bar_code, stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
+                        t.push({ unity: unity, fraction: frac, product: productoC.name, serial_code: productoC.serial_code, client_code: productoC.client_code, stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
                     } else {
                         outStock = true
                     }
                 } else {
-                    t.push({ serial_code: productoC.serial_code, unity: unity, fraction: frac, product: productoC.name, bar_code: productoC.bar_code, stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
+                    t.push({ serial_code: productoC.serial_code, unity: unity, fraction: frac, product: productoC.name, client_code: productoC.client_code,  stock: productoC.stock, product_id: productoC.id, status: incomeType, reason_id: razon, reason: obtenerRazon(razon), quantity: cantidad })
 
                 }
             }
@@ -340,32 +341,7 @@ export default function Crearn(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12} md={productosData.length!=0?6:12} style={{ display: 'flex' }}>
-                        <Autocomplete
-                            size="small"
-                            style={{ width: '100%' }}
-                            options={bodegaData}
-                            value={getName(bodega, bodegaData)}
-                            getOptionLabel={(option) => option.name+" - "+(option.supplier!=null?option.supplier:"JP")}
-                            onChange={(event, value) => {
-                                if (value != null) {
-
-                                    setBodega(value.id)
-                                    
-                                    cargarInventario(value.id)
-                                } else {
-                                    setBodega('')
-                                }
-
-                            }} // prints the selected value
-                            renderInput={params => (
-                                <TextField {...params} label="Seleccione una bodega" variant="outlined" fullWidth />
-                            )}
-                        />
-
-                    </Grid>
-                    {
-                        productosData.length!=0&&(
+                
                             <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                             <Autocomplete
     
@@ -387,7 +363,7 @@ export default function Crearn(props) {
     
                                     }
                                 }}
-                                getOptionLabel={(option) => option.bar_code + " - " + option.name + " - stock: " + option.stock}
+                                getOptionLabel={(option) => option.serial_code + " - " + option.name + " - stock: " + option.stock}
                                 // prints the selected value
                                 renderInput={params => (
                                     <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
@@ -395,10 +371,9 @@ export default function Crearn(props) {
                             />
     
                         </Grid>
-                        )
-                    }
+                
                   
-                    <Grid item xs={12} md={16}>    <TextField
+                    <Grid item xs={12} md={6}>    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
                         type="number"
@@ -437,7 +412,7 @@ export default function Crearn(props) {
                                         <span >{rowData.product}</span>
                                     ),
                                 },
-                                {editable:'never', title: "Código de Barras", field: "bar_code" },
+                                {editable:'never', title: "Código de cliente", field: "client_code" },
                                 {editable:'never', title: "Código serial", field: "serial_code" },
 
                                 { title: "Cantidad", field: "unity" },

@@ -109,7 +109,9 @@ export default function Sistemas(props) {
                     columns={[
                         { title: 'Tipo', field: 'status', render: rowData => rowData.status == 'I' ? 'Ingreso' : 'Egreso' },
                         { title: "Nombre", field: "name" },
-                        { title: "Codigo de Barras", field: "bar_code" },
+                        { title: "Codigo de cliente", field: "client_code" },
+
+                        { title: "Codigo serial", field: "serial_code" },
 
                         {
                             title: "Ajuste", field: "quantity", render: rowData => (

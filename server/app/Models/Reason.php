@@ -12,6 +12,7 @@ class Reason extends Model
         'name',
         'ip',
         'terminal',
-        'user_id'
+        'user_id',
+        'module_id'
     ];
 }

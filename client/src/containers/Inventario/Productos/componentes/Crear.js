@@ -18,6 +18,7 @@ import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../..
 
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
+import TextEnrich from './TextEnrich';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -28,6 +29,8 @@ export default function Crear(props) {
     const [nombre, setNombre] = React.useState("")
     const [jpcode, setJpcode] = React.useState("")
     const [supplierCode, setSupplirCode] = React.useState("")
+
+    const [clientCode,setClientCode] = React.useState("")
     const [serie, setSerie] = React.useState("")
     const [unity, setUnity] = React.useState("")
     const [unityData, setUnityData] = React.useState([])
@@ -41,16 +44,15 @@ export default function Crear(props) {
     const [stockMin, setStockMin] = React.useState("")
     const [stockMax, setStockMax] = React.useState("")
 
-    const [descripcion, setDescripcion] = React.useState("")
     const [bodega, setBodega] = React.useState("")
     const [bodegaData, setBodegaData] = React.useState([])
+    const [description, setDescription] = React.useState("")
 
+ 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-
             obtenerCategorias(setCategoryData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
-
             obtenerUnidades(setUnityData, initializer)
         }
 
@@ -58,22 +60,14 @@ export default function Crear(props) {
     React.useEffect(() => {
         if (props.sistema != null) {
             setNombre(props.sistema.name)
-            setJpcode(props.sistema.jp_code)
-            setSupplirCode(props.sistema.supplier_code)
+            setClientCode(props.sistema.client_code)
             setUnity(props.sistema.unity_id)
             setCategory(props.sistema.category_id)
-
+            setDescription(props.sistema.description)
             setSerie(props.sistema.serial_code)
-            setBarcode(props.sistema.bar_code)
-            setStockMax(props.sistema.max_stock)
-
-            setStock(props.sistema.stock)
-
-            setStockMin(props.sistema.min_stock)
-            setDescripcion(props.sistema.description)
-            setBodega(props.sistema.warehouse_id)
         }
     }, [props.sistema])
+    
     const subir = () => {
         if (props.sistema != null) {
             if (image != null) {
@@ -84,15 +78,10 @@ export default function Crear(props) {
     const guardar = () => {
         let data = {
             'name': nombre,
-            'category_id': category,
-            'description': descripcion,
-            'min_stock': stockMin,
+            'description': description,
             'serial_code': serie,
-            'max_stock': stockMax,
             'unity_id': unity,
-            'url': image,
-            'bar_code': barcode,
-            'warehouse_id': 2,
+            'client_code': clientCode,
             'user_id': 1
         }
         if (props.sistema == null) {
@@ -120,7 +109,7 @@ export default function Crear(props) {
         setImage(null)
         setBodega("")
         setCategory('')
-        setDescripcion('')
+        setDescription('')
         setUnity('')
 
         setStockMax("")
@@ -140,25 +129,6 @@ export default function Crear(props) {
         })
         return object
     }
-    const getNameAll = (id, data) => {
-        let object = null
-        data.map((e) => {
-            if (id == e.id) {
-                object = { ...e }
-            }
-        })
-        return object
-    }
-    const getName2 = (id) => {
-        let object = null
-        categoryData.map((e) => {
-            if (id == e.id) {
-                object = { ...e }
-            }
-        })
-        return object
-    }
-
     return (
         <Dialog
             open={props.open}
@@ -179,22 +149,17 @@ export default function Crear(props) {
 
                 <Grid container spacing={2}>
                     <Grid item xs={12}>    <TextField
-                        variant="outlined"
+                        variant="filled"
                         style={{ width: '100%' }}
-
                         label="Nombre"
                         value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-
                     /></Grid>
                     <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
-
-                        label="Código de barras"
-                        value={barcode}
-                        onChange={(e) => setBarcode(e.target.value)}
-
+                        label="Código de cliente"
+                        value={clientCode}
+                        onChange={(e) => setClientCode(e.target.value)}
                     /></Grid>
                           <Grid item xs={12}>    <TextField
                         variant="outlined"
@@ -205,30 +170,6 @@ export default function Crear(props) {
                         onChange={(e) => setSerie(e.target.value)}
 
                     /></Grid>
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
-                        <Autocomplete
-
-                            style={{ width: '100%' }}
-                            options={categoryData}
-                            value={getName2(category)}
-                            getOptionLabel={(option) => option.name}
-                            onChange={(event, value) => {
-                                if (value != null) {
-
-                                    setCategory(value.id)
-                                } else {
-
-                                    setCategory('')
-
-                                }
-
-                            }} // prints the selected value
-                            renderInput={params => (
-                                <TextField {...params} label="Seleccione una categoria" variant="outlined" fullWidth />
-                            )}
-                        />
-
-                    </Grid>
                     <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
 
@@ -253,92 +194,9 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-
-                    <Grid item xs={12}>   <TextField
-                        variant="outlined"
-                        style={{ width: '100%' }}
-
-                        type="number"
-                        label="Cantidad mínima"
-                        value={stockMin}
-                        onChange={(e) => setStockMin(e.target.value)}
-
-                    /></Grid>
-                    <Grid item xs={12}>   <TextField
-                        variant="outlined"
-                        style={{ width: '100%' }}
-
-                        type="number"
-                        label="Cantidad máxima"
-                        value={stockMax}
-                        onChange={(e) => setStockMax(e.target.value)}
-
-                    /></Grid>
-                    <Grid item xs={12}>  <TextField
-                        variant="outlined"
-
-                        style={{ width: '100%' }}
-
-                        label="Descripción"
-
-                        value={descripcion}
-                        onChange={(e) => setDescripcion(e.target.value)}
-
-                    /></Grid>
-               {/*      <Grid item xs={12} md={12} style={{ display: 'flex' }}>
-                        <Autocomplete
-
-                            style={{ width: '100%' }}
-                            size="small"
-                            options={bodegaData}
-                            getOptionDisabled={(option) => option.id === bodega}
-                            value={getNameAll(bodega, bodegaData)}
-                            getOptionLabel={(option) => option.name}
-                            onChange={(event, value) => {
-                                if (value != null) {
-                                    if (bodega != value.id) {
-                                        setBodega(value.id)
-
-                                    }
-                                } else {
-
-                                    setBodega('')
-
-                                }
-
-                            }} // prints the selected value
-                            renderInput={params => (
-                                <TextField {...params} label="Seleccione la bodega" variant="outlined" fullWidth />
-                            )}
-                        />
-
-                    </Grid> */}
-                    <Grid item md={12} xs={12}>
-                        <input
-                            accept="image/*"
-                            style={{ display: "none", marginRight: "5px" }}
-                            id="templateFile"
-                            multiple
-                            type="file"
-
-                            onChange={(e) => {
-                                setImage(e.target.files[0])
-                            }}
-                        />
-                        <label htmlFor="templateFile">
-                            <Button
-                                startIcon={<CloudUploadIcon />}
-                                variant="outlined"
-                                color="default"
-                                component="span"
-                            >
-                                Subir foto{" "}
-                                {image != null
-                                    ? "(" + image.name + ")"
-                                    : ""}
-                            </Button>
-                        </label>
-                    </Grid>
+                    <Grid item xs={12} md={12} >
+                        <TextEnrich setDescription={setDescription} description={description}/>
+                        </Grid>
 
 
                 </Grid>

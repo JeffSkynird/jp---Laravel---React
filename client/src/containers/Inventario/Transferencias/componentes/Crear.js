@@ -18,7 +18,7 @@ import {  obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
-import { obtenerPorBodega } from '../../../../utils/API/sistemas';
+import { obtenerTodosParam } from '../../../../utils/API/sistemas';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -205,7 +205,7 @@ export default function Crear(props) {
         if (id!=''){
             setInventario([])
           
-            obtenerPorBodega(id,setInventario, initializer)
+            obtenerTodosParam({warehouse_id:id},setInventario,initializer)
 
         }
   
@@ -330,7 +330,9 @@ export default function Crear(props) {
                              <span >{rowData.name}</span>
                             ),
                           },
-                        { title: "Código de barras", field: "bar_code" },
+                          { title: "Código de cliente", field: "client_code" },
+
+                        { title: "Código serial", field: "serial_code" },
                         { title: "Stock", field: "stock" }
 
 
@@ -389,7 +391,6 @@ id={2}
          <span >{rowData.name}</span>
         ),
       },
-    { title: "Código de barras", field: "bar_code" },
     { title: "Stock", field: "stock" },
     { title: "Bodega Origen", field: "warehouseO" },
        { title: "Bodega Destino", field: "warehouse" },

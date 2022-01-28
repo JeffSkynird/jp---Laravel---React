@@ -74,7 +74,7 @@ class SolicitudeController extends Controller
                     'task_id' => $taskId,
                     'warehouse_id' => $request->input('warehouse_id'),
                     'user_id' => 1,
-                    'status' => 'P'
+                    'status' => 'A'
                 ]);
                 if($autorization!=null){
                     $data = Solicitude::find($soli->id);

@@ -15,10 +15,11 @@ class TransferController extends Controller
         try {
             $data = Transfer::
            join('products as p', 'transfers.product_id', '=', 'p.id')
+           ->join('items', 'p.item_id', '=', 'items.id')
             ->join('warehouses as w1', 'transfers.warehouse_origin', '=', 'w1.id')
             ->join('warehouses as w2', 'transfers.warehouse_destination', '=', 'w2.id')
             ->join('reasons', 'transfers.reason_id', '=', 'reasons.id')
-            ->selectRaw('reasons.name as reason,p.image,p.bar_code,p.name,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
+            ->selectRaw('reasons.name as reason,p.serial_code,p.client_code,items.name,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -39,17 +40,16 @@ class TransferController extends Controller
         $data = $request->input('data');
         try {
             foreach ($data as $val) {
-                $pro = Product::find($val['product_id']);
-                $pro->warehouse_id = $val['warehouse_id'];
-                $pro->save();
                 Transfer::create([
                     'product_id'=>$val['product_id'],
                     'warehouse_origin'=>$val['warehouse_idO'],
                     'warehouse_destination'=>$val['warehouse_id'],
                     'user_id'=>1,
                     'reason_id'=>$val['reason_id']
-
                 ]);
+                $ware = WarehouseProduct::where('product_id',$val['product_id'])->where('warehouse_id',$val['warehouse_idO'])->first();
+                $ware->warehouse_id = $val['warehouse_id'];
+                $ware->save();
             }
 
            

@@ -13,11 +13,10 @@ class WarehouseController extends Controller
     public function index()
     {
         try {
-          
             $data = Warehouse::join('zones', 'warehouses.zone_id', '=', 'zones.id')
-            ->leftjoin('products', 'warehouses.id', '=', 'products.warehouse_id')
             ->leftjoin('suppliers', 'suppliers.id', '=', 'warehouses.supplier_id')
-            ->selectRaw('warehouses.*,zones.name as zone, count(products.*) as products,suppliers.business_name as supplier')->groupBy('warehouses.id','zones.name','suppliers.business_name')->get();
+            ->leftjoin('warehouse_products', 'warehouses.id', '=', 'warehouse_products.warehouse_id')
+            ->selectRaw("count(warehouse_products.*) as items,warehouses.*,zones.name as zone,suppliers.business_name as supplier")->groupBy('warehouses.id','zones.name','suppliers.business_name')->get();
            
             return response()->json([
                 "status" => "200",

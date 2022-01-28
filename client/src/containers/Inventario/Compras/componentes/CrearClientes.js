@@ -13,6 +13,8 @@ import { Checkbox, FormControlLabel, Grid, InputAdornment, Paper } from '@materi
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido } from '../../../../utils/API/pedidos';
 import { obtenerTodos } from '../../../../utils/API/proveedores';
 import { obtenerPorCliente, obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import { obtenerTodos as obtenerItems } from '../../../../utils/API/items';
+import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
@@ -33,11 +35,16 @@ export default function Crear(props) {
     const [producto, setProducto] = React.useState([])
     const [price, setPrice] = React.useState("")
     const [subTotalV, setSubTotalV] = React.useState(0)
-
+    const [bodegaData, setBodegaData] = React.useState([])
+    const [bodega, setBodega] = React.useState('')
+    const [itemData, setItemData] = React.useState([])
+    const [item, setItem] = React.useState("")
+    const [itemObject, setItemObject] = React.useState(null)
     React.useEffect(() => {
         if (initializer.usuario != null&&props.open) {
             obtenerTodos(setProveedorData, initializer)
-
+            obtenerTodosBodegas(setBodegaData, initializer)
+            obtenerItems(setItemData, initializer)
         }
     }, [initializer.usuario&&props.open])
     React.useEffect(() => {
@@ -59,10 +66,10 @@ if(proveedor!=""){
     const guardar = () => {
 
        if (props.sistema == null) {
-            registrarPedido({ total:(subTotalV + ((subTotalV) * 0.12)).toFixed(2),type:'C',subtotal:subTotalV,products:productos,authorize:autorizar?1:0 }, initializer)
+            registrarPedido({ total:0,type:'C',subtotal:0,products:productos,authorize:autorizar?1:0 }, initializer)
             limpiar()
         } else {
-            editarPedido(props.sistema.id, { total:(subTotalV + ((subTotalV) * 0.12)).toFixed(2), type:'C', subtotal:subTotalV,products:productos,authorize:autorizar?1:0 }, initializer)
+            editarPedido(props.sistema.id, { total:0, type:'C', subtotal:0,products:productos,authorize:autorizar?1:0 }, initializer)
             limpiar()
 
         }
@@ -106,16 +113,14 @@ if(proveedor!=""){
         return productos.filter((e)=>e.supplier_id==id)
     }
     const agregar=() => {
-        if(producto.length!=0!=""){
+        if(item!=""&&bodega!=""){
             let t = productos.slice()
-            producto.map((e)=>{
-                t.push({product:e.name,supplier:obtenerProveedor(proveedor),product_id:e.id,quantity:cantidad,price:price,subtotal:cantidad*price})
-
-            })
+            t.push({serial_code    : "N/A",client_code:"N/A",warehouse_id:bodega, product:itemObject.name,supplier:obtenerProveedor(proveedor),item_id: itemObject.id,stock:cantidad,price:0,subtotal:0})
             setProductos(t)
 
             setPrice('')
-            setProducto([])
+            setItem('')
+            setItemObject(null)
         }else{
             initializer.mostrarNotificacion({ type: "warning", message: 'No deje campos vacíos' });
 
@@ -173,52 +178,55 @@ if(proveedor!=""){
             Ingresar productos - Cliente
                 </DialogContentText>
                 <Grid container spacing={1}>
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
                             size="small"
                             style={{ width: '100%' }}
-                            options={proveedorData}
-                            value={getName(proveedor, proveedorData)}
-                            getOptionLabel={(option) => option.business_name}
+                            options={bodegaData}
+                            value={getName(bodega, bodegaData)}
+                            getOptionLabel={(option) => option.name + " - " + (option.supplier != null ? option.supplier : "JP")}
                             onChange={(event, value) => {
                                 if (value != null) {
 
-                                    setProveedor(value.id)
+                                    setBodega(value.id)
+
+                                 
                                 } else {
-
-                                    setProveedor('')
-
+                                    setBodega('')
                                 }
 
                             }} // prints the selected value
                             renderInput={params => (
-                                <TextField {...params} label="Seleccione un cliente" variant="outlined" fullWidth />
+                                <TextField {...params} label="Seleccione una bodega" variant="outlined" fullWidth />
                             )}
                         />
 
                     </Grid>
-                    {
-                        productosData.length!=0&&(
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+
+                    <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
-
-                            style={{ width: '100%' }}
                             size="small"
-                            options={productosData}
-                            multiple
-                            value={producto}
-                            onChange={(event, newValue) => {
-                                setProducto(newValue);
-                              }}
-                            getOptionLabel={(option) => option.name+ " - stock: "+option.stock}
-                         // prints the selected value
+                            style={{ width: '100%' }}
+                            options={itemData}
+                            value={getName(item, itemData)}
+                            getOptionLabel={(option) => option.name}
+                            onChange={(event, value) => {
+                                if (value != null) {
+
+                                    setItem(value.id)
+                                    setItemObject(value)
+                                    //cargarInventario(value.id)
+                                } else {
+                                    setItem('')
+                                    setItemObject(null)
+                                }
+
+                            }} // prints the selected value
                             renderInput={params => (
-                                <TextField    variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
+                                <TextField {...params} label="Seleccione un item" variant="outlined" fullWidth />
                             )}
                         />
-
                     </Grid>
-                        )}
                   
                  
                  <Grid item xs={12} md={12}>
@@ -233,7 +241,15 @@ if(proveedor!=""){
                              <span >{rowData.product}</span>
                             ),editable: 'never'
                           },
-                        { title: "Cantidad", field: "quantity" },
+                          {
+                            title: 'Código cliente',
+                            field: 'client_code'
+                        },
+                        {
+                            title: 'Código serial',
+                            field: 'serial_code'
+                        },
+                        { title: "Cantidad", field: "stock" },
                   
 
 
@@ -276,7 +292,7 @@ if(proveedor!=""){
                                         const index = rowData.tableData.id;
                                         dataUpdate[index][columnDef.field] = newValue;
                                         //RECALCULAR SUBTOTAL
-                                        let nuevoSub = (dataUpdate[index].quantity * dataUpdate[index].price).toFixed(2)
+                                        let nuevoSub = (dataUpdate[index].stock * dataUpdate[index].price).toFixed(2)
                                         //CALCULAR EL SUBTOTAL
                                         let tSub = parseFloat((subTotalV - dataUpdate[index].subtotal)) + parseFloat(nuevoSub);
                                      

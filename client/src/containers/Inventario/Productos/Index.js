@@ -1,207 +1,89 @@
-import React from 'react'
-import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import AddIcon from '@material-ui/icons/Add';
-import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import CardContent from '@material-ui/core/CardContent';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
-import Avatar from '@material-ui/core/Avatar';
-import Initializer from '../../../store/Initializer'
+import React from 'react';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import PhoneIcon from '@material-ui/icons/Phone';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import PersonPinIcon from '@material-ui/icons/PersonPin';
+import { BottomNavigation, BottomNavigationAction, Box, Container, Typography } from '@material-ui/core';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import Productos from './Productos'
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import Items from '../Items'
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        maxWidth: 500,
+    },
+    container: {
+        paddingTop: theme.spacing(1),
+        paddingBottom: theme.spacing(4),
+        maxWidth: '100%'
+    },
+}));
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
 
-import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
-import MaterialTable from "material-table";
-import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/sistemas.js';
-import Crear from './componentes/Crear'
-import Eliminar from './componentes/Eliminar'
-import Filtro from './componentes/Filtro'
-import { PUBLIC_PATH } from '../../../config/API';
-import Confirmar from '../../../components/Confirmar'
-export default function Sistemas(props) {
-    const initializer = React.useContext(Initializer);
-    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
-
-    const [data, setData] = React.useState([])
-    const [open, setOpen] = React.useState(false)
-    const [open2, setOpen2] = React.useState(false)
-    const [selected, setSelected] = React.useState(null)
-    const [selected2, setSelected2] = React.useState(null)
-    const [imageSelected, setImageSelected] = React.useState(null)
-
-    const [openFilter, setOpenFilter] = React.useState(false)
-
-    React.useEffect(() => {
-        if (initializer.usuario != null) {
-            obtenerTodos(setData, initializer)
-        }
-    }, [initializer.usuario])
-    const carga = () => {
-        obtenerTodos(setData, initializer)
-        setSelected(null)
-        setSelected2(null)
-    }
-    const total = () => {
-        let tot = 0
-        data.map((e) => {
-            tot += e.evaluaciones
-        })
-        return tot
-    }
-    const colores=(stock,minimo,maximo)=>{
-        if(stock==minimo){
-            return '#ffa500'
-        }else if(stock<minimo){
-            return '#ff0000'
-        }else if(stock>minimo && stock<maximo){
-            return 'green'
-        }else if(stock==maximo){
-            return '#ffa500'
-        }else if(stock>maximo){
-            return '#ff0000'
-        }else{
-            return '#000000'
-        }
-    }
     return (
-        <Grid container spacing={2}>
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`nav-tabpanel-${index}`}
+            aria-labelledby={`nav-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
 
-            <Confirmar ancho={true} body={<img
-                style={{ height: '100%', width: '100%' }}
-                src={PUBLIC_PATH+"storage/" + imageSelected}
-            />} open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={() => {
-                setImageSelected(null)
-                setConfirmarMensaje(false)
-            }} titulo='Foto del producto' />
-
-            <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
-            <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Filtro setOpen={setOpenFilter} open={openFilter} />
-
-            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="h5" >
-                    Productos
-                </Typography>
-                <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                    Nuevo
-                </Button>
-            </Grid>
-
-            <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
-
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.12)', borderWidth: 1, borderStyle: 'solid' }} elevation={0}>
-                    <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Totales
-                        </Typography>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="h4" gutterBottom>
-                                {data.length}
-                            </Typography>
-                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(94, 53, 177)', borderRadius: 20 }} >
-                                <DesktopWindowsIcon />
-                            </Avatar>
-                        </div>
-                    </CardContent>
-                </Card>
-
-            </Grid>
-
-            <Grid item xs={12}>
-                <MaterialTable
-                    icons={TableIcons}
-                    columns={[
-                        {
-                            title: 'Imágen',
-                            field: 'avatar',
-                            render: rowData => (
-                                <img
-                                    onClick={() =>{
-                                        setConfirmarMensaje(true)
-                                        setImageSelected(rowData.image)
-                                    }}
-                                    style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
-                                    src={PUBLIC_PATH+"storage/" + rowData.image}
-                                />
-                            ),
-                        },
-                        { title: "Código serial", field: "serial_code" },
-                        { title: "Código barras", field: "bar_code" },
-
-                        { title: "Nombre", field: "name" },
-                        { title: "Medida", field: "unity" },
-                        { title: "Categoria", field: "category" },
-                        { title: "Stock", field: "stock",render: rowData => ( <span style={{borderRadius:10,padding:5,backgroundColor:colores(rowData.stock,rowData.min_stock,rowData.max_stock),color:'white',fontWeight:'bold' }}>
-                          
-                                {rowData.stock}
-                         
-                        
-                        </span> ) },
-
-                        { title: "Registro", field: "created_at", type: "datetime" },
+export default function IconLabelTabs(props) {
+    const classes = useStyles();
+    const [tab, setTab] = React.useState(0);
 
 
-                    ]}
-                    data={
-                        data
+    return (
+<div>
+
+            {
+                tab == 0 ?
+                    <Items {...props} />
+                    :
+                    <Productos {...props} />
+            }
+            <BottomNavigation
+                value={tab}
+
+                onChange={
+                    (event, newValue) => {
+                        setTab(newValue);
                     }
+                }
+                style={{
+            
+                    position: 'fixed',
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    zIndex: 599
+                }}
+                showLabels
 
-                    localization={LocalizationTable}
+            >
+                <BottomNavigationAction label="Items" icon={<AccountTreeIcon />} />
+                <BottomNavigationAction label="Inventario" icon={<PostAddIcon />} />
 
-                    actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
+            </BottomNavigation>
+      
 
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-
-                        {
-                            icon: TableIcons.Delete,
-                            tooltip: "Borrar",
-
-                            onClick: (event, rowData) => {
-                                setSelected2(rowData)
-                                setOpen2(true)
-                            }
-                        },
-                        {
-                            icon: TableIcons.Filter,
-                            tooltip: 'Filtrar',
-                            isFreeAction: true,
-                            onClick: (event) => setOpenFilter(true)
-                        }
-
-                    ]}
-
-                    options={{
-                        pageSize: 10,
-                        showTitle: false,
-                        actionsColumnIndex: -1,
-
-                        maxBodyHeight: 350,
-                        padding: 'dense',
-                        headerStyle: {
-                            textAlign: 'left'
-                        },
-                        cellStyle: {
-                            textAlign: 'left'
-                        },
-                        searchFieldStyle: {
-
-                            padding: 5
-                        }
-                    }}
-
-                />
-            </Grid>
-        </Grid>
-    )
+    
+            </div>
+    );
 }

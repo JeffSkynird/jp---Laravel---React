@@ -124,7 +124,7 @@ export default function Sistemas(props) {
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
             <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h5" >
-                    Ingresos
+                    Ingreso/Clientes
                 </Typography>
 
                 <Button

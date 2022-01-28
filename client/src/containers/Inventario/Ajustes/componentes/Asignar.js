@@ -7,6 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
+import Initializer from '../../../../store/Initializer'
+
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
 import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';

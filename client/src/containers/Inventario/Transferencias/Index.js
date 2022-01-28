@@ -102,7 +102,8 @@ export default function Sistemas(props) {
                     columns={[
 
                         { title: "Nombre", field: "name" },
-                        { title: "Código de barras", field: "bar_code" },
+                        { title: "Código de cliente", field: "client_code" },
+                        { title: "Código serial", field: "serial_code" },
                         { title: "Bodega origen", field: "warehouse_origin" },
                         { title: "Bodega destino", field: "warehouse_destination" },
                         { title: "Motivo", field: "reason" },

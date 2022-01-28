@@ -14,7 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid, IconButton } from '@material-ui/core';
+import { Chip, Grid, IconButton } from '@material-ui/core';
 import { obtenerTodos } from '../../../utils/API/bodegas.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
@@ -91,10 +91,8 @@ export default function Sistemas(props) {
                             { title: "Nombre", field: "name" },
                             { title: "Descripción", field: "description" },
                             { title: "Zona", field: "zone" },
-                            { title: "Productos", field: "products" },
                             { title: "Propia", field: "is_own", render: rowData => <div>{rowData.is_own == 1 ? 'Si' : 'No'}</div> },
-
-                            { title: "Cliente", field: "supplier", render: rowData => <span>{rowData.supplier != null ? rowData.supplier : "N/A"}</span> },
+                            { title: "Cliente", field: "supplier", render: rowData => <span>{rowData.supplier != null ? rowData.supplier :<Chip label="Ninguno" color="default" />}</span> },
                             { title: "Registro", field: "created_at", type: "datetime" },
 
 

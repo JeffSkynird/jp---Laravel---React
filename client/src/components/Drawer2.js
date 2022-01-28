@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import IconButton from '@material-ui/core/IconButton';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import CallMissedOutgoingIcon from '@material-ui/icons/CallMissedOutgoing';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import AccountCircle from '@material-ui/icons/PermIdentity';
@@ -48,6 +49,7 @@ import { useLocation, Switch } from 'react-router-dom';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import SpeedDial from './SpeedDial';
+import CallMissedIcon from '@material-ui/icons/CallMissed';
 import logo from '../assets/logo.png'
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
@@ -70,7 +72,12 @@ const useStyles = makeStyles((theme) => ({
             width: '20ch',
         },
     },
-
+    menuButton: {
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+          display: 'none',
+        },
+      },
     search: {
         height: 45,
         borderWidth: 1,
@@ -133,12 +140,6 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: drawerWidth,
         },
     },
-    menuButton: {
-        marginRight: theme.spacing(2),
-        [theme.breakpoints.up('sm')]: {
-            display: 'none',
-        },
-    },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
@@ -148,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
-    },
+      },
     grow: {
         flexGrow: 1,
     },
@@ -213,7 +214,7 @@ function ResponsiveDrawer(props) {
 
     const drawer = (
         <div >
-            <div style={{ marginBottom: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                 <Avatar size="" className={classes.avatar} src={logo}>
 
                 </Avatar>
@@ -236,7 +237,7 @@ function ResponsiveDrawer(props) {
             </div>
 
             <Divider />
-            <div style={{ justifyContent: 'space-between', flexDirection: 'column', display: 'flex', height: '100%' }}>
+            <div style={{ justifyContent: 'space-between', flexDirection: 'column', display: 'flex'}}>
                 <List style={{ padding: 10 }} >
 
                     <ListItem button onClick={() => props.history.push('panel')} style={comprobador('/panel')}>
@@ -267,11 +268,11 @@ function ResponsiveDrawer(props) {
                                 </ListItemIcon>
                                 <ListItemText primary="Bodegas" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/productos')} >
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/items')} >
                                 <ListItemIcon>
                                     <PostAddIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Productos" />
+                                <ListItemText primary="Items" />
                             </ListItem>
 
                             <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/proveedores')}>
@@ -301,9 +302,15 @@ function ResponsiveDrawer(props) {
                             </ListItem>
                             <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/compras')} >
                                 <ListItemIcon>
-                                    <AllInboxIcon />
+                                    <CallMissedIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Ingresos" />
+                            </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/movimientos/egresos')} >
+                                <ListItemIcon>
+                                    <CallMissedOutgoingIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Egresos" />
                             </ListItem>
                             <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/transferencias')} >
                                 <ListItemIcon>
@@ -319,32 +326,21 @@ function ResponsiveDrawer(props) {
                             </ListItem>
                         </List>
                     </Collapse>
-                    <ListItem button onClick={() => setOpenCollapse3(!openCollapse3)} style={comprobador('/inventario')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><AssignmentTurnedInIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+          
+          
+                    <ListItem button style={comprobador('/inventario/tareas')}   onClick={() => props.history.push('/inventario/tareas')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><AssignmentIcon /> </ListItemIcon>
                         <ListItemText primary={'Tareas'} />
-                        {openCollapse3 ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </ListItem>
-                    <Collapse in={openCollapse3} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding >
-                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/tareas')} >
-                                <ListItemIcon>
-                                    <AssignmentIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Tareas" />
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/pedidos')} >
-                                <ListItemIcon>
-                                    <AssignmentReturnedIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Pedidos" />
+                    </ListItem>       
 
-                            </ListItem>
-                        </List>
-                    </Collapse>
+                     <ListItem button style={comprobador('/inventario/pedidos')}   onClick={() => props.history.push('/inventario/pedidos')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><AssignmentReturnedIcon /> </ListItemIcon>
+                        <ListItemText primary={'Pedidos'} />
+                    </ListItem>        
                     <ListItem button style={comprobador('/reportes')}>
-                            <ListItemIcon style={{ color: 'inherit' }}><PrintIcon /> </ListItemIcon>
-                            <ListItemText primary={'Reportes'} />
-                        </ListItem>
+                        <ListItemIcon style={{ color: 'inherit' }}><PrintIcon /> </ListItemIcon>
+                        <ListItemText primary={'Reportes'} />
+                    </ListItem>
 
                 </List>
 
@@ -379,7 +375,8 @@ function ResponsiveDrawer(props) {
                 history.location.pathname != "/bienvenida" && history.location.pathname != "/login" ?
 
                     <React.Fragment>
-                        <AppBar position="fixed" color="white" elevation={0} style={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                        <AppBar position="fixed"
+                            className={mobileOpen ? classes.appBarShift : classes.appBar} position="fixed" color="white" elevation={0} style={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
                             <Toolbar>
 
                                 <IconButton
@@ -387,7 +384,7 @@ function ResponsiveDrawer(props) {
                                     aria-label="open drawer"
                                     edge="start"
                                     onClick={handleDrawerToggle}
-
+                                    className={classes.menuButton}
                                 >
                                     <MenuIcon />
                                 </IconButton>
@@ -407,12 +404,12 @@ function ResponsiveDrawer(props) {
                                 </div>
                                 <div className={classes.grow} />
 
-                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5, marginBottom: 15 }} >
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#e3f2fd', borderRadius: 5 }} >
 
                                     <Notifications notification={notification} />
 
                                 </Avatar>
-                                <Avatar variant="rounded" style={{ marginLeft: 10, marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5, marginBottom: 15 }} >
+                                <Avatar variant="rounded" style={{ marginLeft: 10, marginTop: 5, backgroundColor: '#ede7f6', borderRadius: 5}} >
                                     <IconButton aria-label="show 4 new mails" color="inherit">
 
                                         <AccountCircle style={{ color: '#5e35b1' }} />
@@ -422,7 +419,7 @@ function ResponsiveDrawer(props) {
 
                             </Toolbar>
                         </AppBar>
-                        <nav aria-label="mailbox folders">
+                        <nav aria-label="mailbox folders" className={classes.drawer}>
                             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                             <Hidden smUp implementation="css">
                                 <Drawer
@@ -441,13 +438,24 @@ function ResponsiveDrawer(props) {
                                     {drawer}
                                 </Drawer>
                             </Hidden>
+                            <Hidden xsDown implementation="css">
+                                <Drawer
+                                    classes={{
+                                        paper: classes.drawerPaper,
+                                    }}
+                                    variant="permanent"
+                                    open
+                                >
+                                    {drawer}
+                                </Drawer>
+                            </Hidden>
 
                         </nav>
                     </React.Fragment>
                     :
                     null
             }
-            <main style={{ overflow: 'auto' }} className={history != null ? history.location.pathname != "/bienvenida" ? classes.content : "" : ""}>
+            <main className={classes.content} style={{ overflow: 'auto', padding: 15 }} >
 
 
                 <div className={classes.toolbar} />

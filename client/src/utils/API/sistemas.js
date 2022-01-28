@@ -169,13 +169,14 @@ export const registrarSistema = (data,store) => {
 
     });
 }
-export const obtenerTodos = (setData,store) => {
+export const obtenerTodosParam = (params,setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
  
   let url = ENTRYPOINT+"products"
   let setting = {
     method: "Get",
+    params,
     url: url,
     headers: { 'Accept': 'application/json',
     Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
@@ -199,6 +200,37 @@ export const obtenerTodos = (setData,store) => {
 
 
     });
+}
+export const obtenerTodos = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"products"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+   
+
+   }else{
+   
+   }
+  })
+  .catch((error) => {
+   
+
+
+  });
 }
 export const obtenerSistemaEvaluaciones = (setLabels,setValues,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;

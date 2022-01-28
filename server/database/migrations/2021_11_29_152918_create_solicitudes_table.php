@@ -16,7 +16,7 @@ class CreateSolicitudesTable extends Migration
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('warehouse_id')->constrained('warehouses');
-            $table->enum('status', ['P', 'C','A'])->default('P');
+            $table->enum('status', ['P', 'C','A'])->default('A');
             $table->foreignId('authorized_by')->nullable()->constrained('users');
             $table->foreignId('task_id')->nullable()->constrained('tasks');
             $table->string('ip')->nullable();

@@ -15,8 +15,9 @@ class AdjustmentController extends Controller
         try {
         
             $data = Adjustment::join('products', 'adjustments.product_id', '=', 'products.id')
+            ->join('items', 'products.item_id', '=', 'items.id')
             ->join('reasons', 'adjustments.reason_id', '=', 'reasons.id')
-            ->selectRaw('products.name,adjustments.status,products.bar_code,products.stock,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
+            ->selectRaw('items.name,adjustments.status,products.serial_code,products.client_code,products.stock,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
             return json_encode([
                 "status" => "200",
                 'data'=>$data,
