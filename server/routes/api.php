@@ -186,6 +186,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('expenses', 'App\Http\Controllers\v1\Inventario\ExpenseController@index');
         Route::delete('expenses/{id}', 'App\Http\Controllers\v1\Inventario\ExpenseController@delete');
 
+
+        
+        Route::post('import/item', 'App\Http\Controllers\v1\Inventario\ItemController@import');
+        Route::post('import/product', 'App\Http\Controllers\v1\Inventario\ProductController@import');
+
+
         Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');
         Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
 

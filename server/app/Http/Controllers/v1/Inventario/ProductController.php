@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ProductsImport;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use File;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ProductController extends Controller
 {
     public function save($file)
@@ -19,6 +22,22 @@ class ProductController extends Controller
             return null;
         }
 
+    }
+    public function import(Request $request){
+        
+        try{
+            Excel::import(new ProductsImport, $request->file('file'));
+            return response([
+                'message' => "Datos importados correctamente.",
+                'type' => "success",
+            ]);
+
+        } catch (\Exception $exception) {
+            return response([
+                'message' =>  $exception->getMessage(),
+                'type' => 'error',
+            ]);
+        }
     }
     public function index(Request $request)
     {

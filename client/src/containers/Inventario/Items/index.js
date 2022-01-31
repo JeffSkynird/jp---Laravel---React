@@ -12,15 +12,16 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
-
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import { obtenerTodos } from '../../../utils/API/items.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
 import { PUBLIC_PATH } from '../../../config/API';
+import Importar from './/componentes/Importar'
 import Confirmar from '../../../components/Confirmar'
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
@@ -29,6 +30,8 @@ export default function Sistemas(props) {
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
+    const [open3, setOpen3] = React.useState(false)
+
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
     const [imageSelected, setImageSelected] = React.useState(null)
@@ -83,6 +86,7 @@ export default function Sistemas(props) {
 
                     )
                 }
+                
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
             <Filtro setOpen={setOpenFilter} open={openFilter} />
 
@@ -114,7 +118,11 @@ export default function Sistemas(props) {
                 </Card>
 
             </Grid>
+            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:'center'}}>
+                <Typography color="initial">Acciones</Typography>
+                <Importar carga={carga}/>
 
+            </Grid>
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}

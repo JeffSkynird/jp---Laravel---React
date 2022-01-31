@@ -138,6 +138,46 @@ export const registrarSistema = (data,store) => {
   }
 
   
+export const importar = (data,store,carga) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+  var resp = new FormData()
+  resp.append('file', data.file)
+  
+  let url = ENTRYPOINT+"import/product";
+  let setting = {
+    method: "POST",
+    url: url,
+    data: resp,
+    body: resp,
+    headers: {
+      Accept: "application/json",
+      Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,
+
+    }
+  };
+ 
+  mostrarLoader(true);
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data
+      if(res.data.type!="error"){
+        carga();
+        mostrarLoader(false);
+        mostrarNotificacion({ type: "success", message: response.message });
+   
+      }else{
+      
+        mostrarLoader(false);
+        mostrarNotificacion({ type: "error", message: response.message });
+      }
+      
+    })
+    .catch((error) => {
+      mostrarLoader(false);
+      mostrarNotificacion({ type: "success", message: error.message });
+    });
+};
   export const obtenerInventory = (setData,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 

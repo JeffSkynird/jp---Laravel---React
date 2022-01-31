@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ItemsImport;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use File;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ItemController extends Controller
 {
     public function save($file)
@@ -37,6 +40,22 @@ class ItemController extends Controller
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
+            ]);
+        }
+    }
+    public function import(Request $request){
+        
+        try{
+            Excel::import(new ItemsImport, $request->file('file'));
+            return response([
+                'message' => "Datos importados correctamente.",
+                'type' => "success",
+            ]);
+
+        } catch (\Exception $exception) {
+            return response([
+                'message' =>  $exception->getMessage(),
+                'type' => 'error',
             ]);
         }
     }
