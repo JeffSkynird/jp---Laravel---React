@@ -12,13 +12,12 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
-import { editarSistema, registrarSistema, subirFoto } from '../../../../utils/API/sistemas';
+import { editarSistema, generarCodigoSerial, registrarSistema, subirFoto } from '../../../../utils/API/sistemas';
 import { obtenerTodos as obtenerCategorias } from '../../../../utils/API/categories';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
-
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
-import TextEnrich from './TextEnrich';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -65,6 +64,8 @@ export default function Crear(props) {
             setCategory(props.sistema.category_id)
             setDescription(props.sistema.description)
             setSerie(props.sistema.serial_code)
+            setBarcode(props.sistema.bar_code)
+            setJpcode(props.sistema.jp_code)
         }
     }, [props.sistema])
     
@@ -80,6 +81,7 @@ export default function Crear(props) {
             'name': nombre,
             'description': description,
             'serial_code': serie,
+            'bar_code': barcode,
             'unity_id': unity,
             'client_code': clientCode,
             'user_id': 1
@@ -104,7 +106,7 @@ export default function Crear(props) {
         setNombre("")
         setJpcode("")
         setSupplirCode("")
-
+        setBarcode("")
         setSerie("")
         setImage(null)
         setBodega("")
@@ -128,6 +130,9 @@ export default function Crear(props) {
             }
         })
         return object
+    }
+    const generateSerial=()=>{
+        generarCodigoSerial({id:props.sistema.id},setSerie,initializer)
     }
     return (
         <Dialog
@@ -161,6 +166,15 @@ export default function Crear(props) {
                         value={clientCode}
                         onChange={(e) => setClientCode(e.target.value)}
                     /></Grid>
+                     <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        label="Código de JP"
+                        value={jpcode}
+                      
+                       
+                   
+                    /></Grid>
                           <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
@@ -168,6 +182,25 @@ export default function Crear(props) {
                         label="Código serial"
                         value={serie}
                         onChange={(e) => setSerie(e.target.value)}
+                        InputProps={{
+                            endAdornment:  <InputAdornment position="end">
+                            <IconButton
+                                onClick={generateSerial}
+                              edge="end"
+                            >
+                          <RefreshIcon />
+                            </IconButton>
+                          </InputAdornment>,
+                          }}
+
+                    /></Grid>
+                       <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width: '100%' }}
+
+                        label="Código de barras"
+                        value={barcode}
+                        onChange={(e) => setBarcode(e.target.value)}
 
                     /></Grid>
                     <Grid item xs={12} md={12} style={{ display: 'flex' }}>
@@ -194,11 +227,18 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12} md={12} >
-                        <TextEnrich setDescription={setDescription} description={description}/>
-                        </Grid>
+                
 
+                        <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        multiline
+                        
+                        label="Descripción"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
 
+                    /></Grid>
                 </Grid>
 
             </DialogContent>

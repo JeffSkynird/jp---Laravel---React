@@ -165,8 +165,11 @@ minHeight: 'min-content'}}>
                                 />
                             ),
                         },
+                        { title: "Código JP", field: "jp_code" },
                         { title: "Código cliente", field: "client_code" },
                         { title: "Código serial", field: "serial_code" },
+                        { title: "Código barras", field: "bar_code" },
+
                         { title: "Nombre", field: "name" },
                         { title: "Medida", field: "unity" },
                         { title: "Categoria", field: "category" },

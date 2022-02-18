@@ -109,7 +109,7 @@ export default function Crear(props) {
     const agregar = () => {
         if (item!= ""&&bodega!="") {
             let t = productos.slice()
-            t.push({ serial_code    : "N/A",client_code:"N/A", product: itemObject.name,warehouse_id:bodega, item_id: itemObject.id, stock: cantidad, price: price, subtotal: cantidad * price })
+            t.push({ bar_code:"N/A",serial_code    : "N/A",client_code:"N/A", product: itemObject.name,warehouse_id:bodega, item_id: itemObject.id, stock: cantidad, price: price, subtotal: cantidad * price })
             setProductos(t)
             setPrice('')
             setItem("")
@@ -233,11 +233,15 @@ export default function Crear(props) {
                                 },
                                 {
                                     title: 'Código cliente',
-                                    field: 'client_code'
+                                    field: 'client_code',type:"string"
                                 },
                                 {
                                     title: 'Código serial',
-                                    field: 'serial_code'
+                                    field: 'serial_code',type:"string"
+                                },
+                                {
+                                    title: 'Código de barras',
+                                    field: 'bar_code',type:"string"
                                 },
                                 { title: "Cantidad", field: "stock" },
                                 { title: "Precio", field: "price", type: "currency" },
@@ -288,8 +292,8 @@ export default function Crear(props) {
 
                                                     setSubTotalV(tSub)
                                                     setProductos([...dataUpdate]);
-
                                                 }
+                                                
                                             }
                                             resolve();
                                         }, 1000)

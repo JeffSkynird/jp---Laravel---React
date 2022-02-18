@@ -40,10 +40,34 @@ class OrderController extends Controller
             ]);
         }
     }
+    function incrementalHash($len = 5, $type)
+    {
+        $charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $charsetNumber = "0123456789";
+
+        $final = $type == 'number' ? $charsetNumber : $charset;
+        $base = strlen($final);
+        $result = '';
+
+        $now = explode(' ', microtime())[1];
+        while ($now >= $base) {
+            $i = $now % $base;
+            $result = $final[$i] . $result;
+            $now /= $base;
+        }
+        return substr($result, -$len);
+    }
     public function createDetailOrder($val,$quantity,$price,$subt, $order)
     {
         $val['user_id']=Auth::id();
         $pro = Product::create($val);
+        $params = [
+            'jp_code'=>"JP-".$val['item_id']."-".$pro->id
+        ];
+        if($pro->serial_code==null||$pro->serial_code=="N/A"){
+            $params['serial_code']=$this->incrementalHash(4, 'letter') . $this->incrementalHash(9, 'number') . $pro->id;
+        }
+        $pro->update($params);
         OrderProduct::create([
             'order_id' => $order,
             'quantity' => $quantity,

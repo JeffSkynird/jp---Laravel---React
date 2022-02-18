@@ -20,6 +20,7 @@ import { Alert, Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import { registrarUnidad } from '../../../../utils/API/ajustes';
+import { obtenerPorModulo } from '../../../../utils/API/motivos';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -47,7 +48,7 @@ export default function Crearn(props) {
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerRazones(setRazonData, initializer)
+            obtenerPorModulo({module_id:2},setRazonData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
             obtenerTipoIngreso(setIncomeTypeData, initializer)
             obtenerTodosParam({},setProductosData,initializer)

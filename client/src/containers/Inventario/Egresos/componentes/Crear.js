@@ -21,6 +21,7 @@ import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import { registrarUnidad } from '../../../../utils/API/ajustes';
 import { registrar } from '../../../../utils/API/egresos';
+import { obtenerPorModulo } from '../../../../utils/API/motivos';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -48,7 +49,8 @@ export default function Crearn(props) {
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerRazones(setRazonData, initializer)
+
+            obtenerPorModulo({module_id:1},setRazonData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
             obtenerTipoIngreso(setIncomeTypeData, initializer)
             obtenerTodosParam({},setProductosData,initializer)

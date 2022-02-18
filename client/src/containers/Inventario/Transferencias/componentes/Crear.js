@@ -19,6 +19,7 @@ import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import { obtenerTodosParam } from '../../../../utils/API/sistemas';
+import { obtenerPorModulo } from '../../../../utils/API/motivos';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -44,8 +45,7 @@ export default function Crear(props) {
         if (initializer.usuario != null) {
             obtenerTodos(setProveedorData, initializer)
             obtenerTodosBodegas(setBodegaData, initializer)
-            obtenerRazones(setRazonData, initializer)
-
+            obtenerPorModulo({module_id:3},setRazonData, initializer)
         }
     }, [initializer.usuario ])
     React.useEffect(() => {

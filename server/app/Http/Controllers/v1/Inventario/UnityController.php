@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1\Inventario;
 use App\Http\Controllers\Controller;
 use App\Models\Unity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UnityController extends Controller
 {
@@ -29,6 +30,7 @@ class UnityController extends Controller
     public function create(Request $request)
     {
         try {
+            $request['user_id'] = Auth::id();
             Unity::create($request->all());
             return response()->json([
                 "status" => "200",

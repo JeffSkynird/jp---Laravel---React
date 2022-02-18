@@ -61,11 +61,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('warehouses', 'App\Http\Controllers\v1\Inventario\WarehouseController@index');
     Route::delete('warehouses/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@delete');
 
-    Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');
-    Route::put('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@update');
-    Route::get('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@show');
-    Route::get('unities', 'App\Http\Controllers\v1\Inventario\UnityController@index');
-    Route::delete('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@delete');
+   
     Route::post('products', 'App\Http\Controllers\v1\Inventario\ProductController@create');
 
     //Route::post('products/upload_image/{id}', 'App\Http\Controllers\v1\Inventario\ProductController@subirFoto');
@@ -102,17 +98,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('features', 'App\Http\Controllers\v1\Inventario\FeatureController@index');
     Route::delete('features/{id}', 'App\Http\Controllers\v1\Inventario\FeatureController@delete');
 
-    Route::post('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@create');
-    Route::put('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@update');
-    Route::get('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@show');
-    Route::get('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@index');
-    Route::delete('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@delete');
-
-    Route::post('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@create');
-    Route::put('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@update');
-    Route::get('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@show');
-    Route::get('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@index');
-    Route::delete('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@delete');
 
     Route::post('transfers', 'App\Http\Controllers\v1\Inventario\TransferController@create');
     Route::put('transfers/{id}', 'App\Http\Controllers\v1\Inventario\TransferController@update');
@@ -163,12 +148,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('tasks/users/{id}', 'App\Http\Controllers\v1\Inventario\TaskController@showUsersAsiggned');
     Route::post('solicitude', 'App\Http\Controllers\v1\Inventario\SolicitudeController@create');
 
-    //Modulos
-    Route::post('modules', 'App\Http\Controllers\v1\Gestion\ModuleController@create');
-    Route::put('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@update');
-    Route::get('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@show');
-    Route::get('modules', 'App\Http\Controllers\v1\Gestion\ModuleController@index');
-    Route::delete('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@delete');
+    
+
     //Items
     Route::post('items', 'App\Http\Controllers\v1\Inventario\ItemController@create');
     Route::put('items/{id}', 'App\Http\Controllers\v1\Inventario\ItemController@update');
@@ -177,8 +158,35 @@ Route::group(['prefix' => 'v1'], function () {
     Route::delete('items/{id}', 'App\Http\Controllers\v1\Inventario\ItemController@delete');
     Route::post('items/upload_image/{id}', 'App\Http\Controllers\v1\Inventario\ItemController@subirFoto');
 
+    Route::get('generate_serial', 'App\Http\Controllers\v1\Inventario\ProductController@generateSerialCode');
+
     Route::middleware('auth:api')->group(function () {
-      
+           //Modulos
+    Route::post('modules', 'App\Http\Controllers\v1\Gestion\ModuleController@create');
+    Route::put('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@update');
+    Route::get('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@show');
+    Route::get('modules', 'App\Http\Controllers\v1\Gestion\ModuleController@index');
+    Route::delete('modules/{id}', 'App\Http\Controllers\v1\Gestion\ModuleController@delete');
+    
+    Route::post('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@create');
+    Route::put('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@update');
+    Route::get('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@show');
+    Route::get('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@index');
+    Route::delete('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@delete');
+    Route::get('reasons_by_module', 'App\Http\Controllers\v1\Inventario\ReasonController@searchByModule');
+
+
+        Route::post('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@create');
+        Route::put('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@update');
+        Route::get('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@show');
+        Route::get('categories', 'App\Http\Controllers\v1\Inventario\CategoryController@index');
+        Route::delete('categories/{id}', 'App\Http\Controllers\v1\Inventario\CategoryController@delete');
+    
+        Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');
+        Route::put('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@update');
+        Route::get('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@show');
+        Route::get('unities', 'App\Http\Controllers\v1\Inventario\UnityController@index');
+        Route::delete('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@delete');
         //Expense
         Route::post('expenses', 'App\Http\Controllers\v1\Inventario\ExpenseController@create');
         Route::put('expenses/{id}', 'App\Http\Controllers\v1\Inventario\ExpenseController@update');

@@ -23,6 +23,7 @@ import Filtro from './componentes/Filtro'
 import { PUBLIC_PATH } from '../../../config/API';
 import Importar from './/componentes/Importar'
 import Confirmar from '../../../components/Confirmar'
+import Errors from './componentes/Errors';
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
     const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
@@ -30,13 +31,14 @@ export default function Sistemas(props) {
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
-    const [open3, setOpen3] = React.useState(false)
+    const [openErrors, setOpenErrors] = React.useState(false)
 
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
     const [imageSelected, setImageSelected] = React.useState(null)
 
     const [openFilter, setOpenFilter] = React.useState(false)
+    const [errorsImport, setErrorsImport] = React.useState([])
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -44,6 +46,8 @@ export default function Sistemas(props) {
         }
     }, [initializer.usuario])
     const carga = () => {
+
+       
         obtenerTodos(setData, initializer)
         setSelected(null)
         setSelected2(null)
@@ -70,9 +74,14 @@ export default function Sistemas(props) {
             return '#000000'
         }
     }
+    const cargarError=(error)=>{
+        setOpenErrors(true)
+        setErrorsImport(error)
+
+    }
     return (
         <Grid container spacing={2}>
-
+             <Errors data={errorsImport} open={openErrors} setOpen={setOpenErrors}/>
             <Confirmar ancho={true} body={<img
                 style={{ height: '100%', width: '100%' }}
                 src={PUBLIC_PATH+"storage/" + imageSelected}
@@ -120,7 +129,7 @@ export default function Sistemas(props) {
             </Grid>
             <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:'center'}}>
                 <Typography color="initial">Acciones</Typography>
-                <Importar carga={carga}/>
+                <Importar carga={carga} cargarError={cargarError}/>
 
             </Grid>
             <Grid item xs={12}>

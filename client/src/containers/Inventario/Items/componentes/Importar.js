@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import Table from '@material-ui/core/Table';
@@ -15,8 +15,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { importar } from '../../../../utils/API/items';
-import { importar as importarProductos} from '../../../../utils/API/sistemas';
+import { importar as importarProductos } from '../../../../utils/API/sistemas';
 import Initializer from '../../../../store/Initializer'
+import { Autocomplete } from '@material-ui/lab';
+import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 
 export default function AlertDialog(props) {
     const initializer = React.useContext(Initializer);
@@ -25,6 +27,17 @@ export default function AlertDialog(props) {
     const [tipo, setTipo] = React.useState("");
     const [archivo, setArchivo] = React.useState(null);
 
+
+    const [bodegaData, setBodegaData] = React.useState([])
+    const [bodega, setBodega] = React.useState('')
+    React.useEffect(() => {
+        if (initializer.usuario != null &&open) {
+ 
+            obtenerTodosBodegas(setBodegaData, initializer)
+           
+
+        }
+    }, [initializer.usuario, open])
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -33,14 +46,23 @@ export default function AlertDialog(props) {
         setOpen(false);
     };
     const guardar = () => {
-        if(tipo=="items"){
+        if (tipo == "items") {
             importar({ file: archivo }, initializer, props.carga)
 
-        }else{
-            importarProductos({file:archivo},initializer, props.carga);
+        } else {
+            importarProductos({ file: archivo,warehouse_id:bodega }, initializer, props.carga,props.cargarError);
         }
-
+        setArchivo(null)
         setOpen(false);
+    }
+    const getName = (id, data) => {
+        let object = null
+        data.map((e) => {
+            if (id == e.id) {
+                object = { ...e }
+            }
+        })
+        return object
     }
     return (
         <div>
@@ -79,9 +101,38 @@ export default function AlertDialog(props) {
                                 </Select>
                             </FormControl>
                         </Grid>
+                        {
+                            
+                                tipo == "productos" && (
+                                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                                    <Autocomplete
+                                   
+                                        style={{ width: '100%' }}
+                                        options={bodegaData}
+                                        value={getName(bodega, bodegaData)}
+                                        getOptionLabel={(option) => option.name + " - " + (option.supplier != null ? option.supplier : "JP")}
+                                        onChange={(event, value) => {
+                                            if (value != null) {
+            
+                                                setBodega(value.id)
+            
+                                            } else {
+                                                setBodega('')
+                                            }
+            
+                                        }} // prints the selected value
+                                        renderInput={params => (
+                                            <TextField {...params} label="Seleccione una bodega" variant="outlined" fullWidth />
+                                        )}
+                                    />
+            
+                                </Grid>
+                                )
+                        }
+                      
                         <Grid item md={12} xs={12}>
                             <input
-                        
+
                                 style={{ display: "none", marginRight: "5px" }}
                                 id="templateFile"
 
@@ -105,65 +156,69 @@ export default function AlertDialog(props) {
                                 </Button>
                             </label>
                         </Grid>
-{
-    tipo=="items" &&(
-        <Grid item md={12} xs={12}>
-        <Typography variant="caption" >Ejemplo:</Typography>
-        <Table aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell align="right">Descripción</TableCell>
-                    <TableCell align="right">Mínimo</TableCell>
-                    <TableCell align="right">Máximo</TableCell>
-                    <TableCell align="right">Categoría</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                <TableRow >
-                    <TableCell align="right">Producto 1</TableCell>
-                    <TableCell align="right">Descripcion 1</TableCell>
-                    <TableCell align="right">0</TableCell>
-                    <TableCell align="right">100</TableCell>
-                    <TableCell align="right">Categoria 1</TableCell>
-                </TableRow>
-            </TableBody>
-        </Table>
-    </Grid>
-    )
-}
-{
-    tipo=="productos" &&(
-        <Grid item md={12} xs={12}>
-        <Typography variant="caption" >Ejemplo:</Typography>
-        <Table aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                    <TableCell>Item</TableCell>
-                    <TableCell align="right">Código cliente</TableCell>
-                    <TableCell align="right">Código serial</TableCell>
-                    <TableCell align="right">Descripción</TableCell>
-                    <TableCell align="right">Stock</TableCell>
-                    <TableCell align="right">Precio</TableCell>
-                    <TableCell align="right">Unidad</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                <TableRow >
-                    <TableCell align="right">Item 1</TableCell>
-                    <TableCell align="right">0001</TableCell>
-                    <TableCell align="right">0001</TableCell>
-                    <TableCell align="right">Descripción</TableCell>
-                    <TableCell align="right">1</TableCell>
-                    <TableCell align="right">5.5</TableCell>
-                    <TableCell align="right">cm</TableCell>
-                </TableRow>
-            </TableBody>
-        </Table>
-    </Grid>
-    )
-}
                        
+
+                        {
+                            tipo == "items" && (
+                                <Grid item md={12} xs={12}>
+                                    <Typography variant="caption" >Ejemplo:</Typography>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Nombre</TableCell>
+                                                <TableCell align="right">Descripción</TableCell>
+                                                <TableCell align="right">Mínimo</TableCell>
+                                                <TableCell align="right">Máximo</TableCell>
+                                                <TableCell align="right">Categoría</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow >
+                                                <TableCell align="right">Producto 1</TableCell>
+                                                <TableCell align="right">Descripcion 1</TableCell>
+                                                <TableCell align="right">0</TableCell>
+                                                <TableCell align="right">100</TableCell>
+                                                <TableCell align="right">Categoria 1</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </Grid>
+                            )
+                        }
+                        {
+                            tipo == "productos" && (
+                                <Grid item md={12} xs={12}>
+                                    <Typography variant="caption" >Ejemplo:</Typography>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Item</TableCell>
+                                                <TableCell align="right">Código cliente</TableCell>
+                                                <TableCell align="right">Código serial</TableCell>
+                                                <TableCell align="right">Código barras</TableCell>
+                                                <TableCell align="right">Descripción</TableCell>
+                                                <TableCell align="right">Stock</TableCell>
+                                                <TableCell align="right">Precio</TableCell>
+                                                <TableCell align="right">Unidad</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow >
+                                                <TableCell align="right">Item 1</TableCell>
+                                                <TableCell align="right">0001</TableCell>
+                                                <TableCell align="right">0001</TableCell>
+                                                <TableCell align="right">ABCD1234567890</TableCell>
+                                                <TableCell align="right">Descripción</TableCell>
+                                                <TableCell align="right">1</TableCell>
+                                                <TableCell align="right">5.5</TableCell>
+                                                <TableCell align="right">cm</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </Grid>
+                            )
+                        }
+
                     </Grid>
 
                 </DialogContent>

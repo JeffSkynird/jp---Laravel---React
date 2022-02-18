@@ -19,7 +19,6 @@ class ItemsImport  implements ToCollection
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-   
     public function collection(Collection $rows)
     {
         set_time_limit(500);

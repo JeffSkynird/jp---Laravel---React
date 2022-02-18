@@ -52,12 +52,13 @@ import SpeedDial from './SpeedDial';
 import CallMissedIcon from '@material-ui/icons/CallMissed';
 import logo from '../assets/logo.png'
 import ImportExportIcon from '@material-ui/icons/ImportExport';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import AvTimerIcon from '@material-ui/icons/AvTimer';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import { Badge, Box, Button, Grid } from '@material-ui/core';
 import PrintIcon from '@material-ui/icons/Print';
 import Notifications from './Notification';
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
         color: 'inherit',
@@ -285,6 +286,13 @@ function ResponsiveDrawer(props) {
                                 <ListItemIcon ><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
                                 <ListItemText primary={'Personal'} />
                             </ListItem>
+                            <ListItem button className={classes.nested} onClick={() => props.history.push('/dependencias')} style={comprobador('/dependencias')}>
+                                <ListItemIcon ><SettingsApplicationsIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Dependencias'} />
+                            </ListItem>
+
+                            
+
                         </List>
                     </Collapse>
                     <ListItem button onClick={() => setOpenCollapse2(!openCollapse2)} style={comprobador('/inventario')}>
@@ -336,7 +344,11 @@ function ResponsiveDrawer(props) {
                      <ListItem button style={comprobador('/inventario/pedidos')}   onClick={() => props.history.push('/inventario/pedidos')}>
                         <ListItemIcon style={{ color: 'inherit' }}><AssignmentReturnedIcon /> </ListItemIcon>
                         <ListItemText primary={'Pedidos'} />
-                    </ListItem>        
+                    </ListItem>   
+                    <ListItem button style={comprobador('/control')}   onClick={() => props.history.push('/control')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><AvTimerIcon /> </ListItemIcon>
+                        <ListItemText primary={'Control'} />
+                    </ListItem>             
                     <ListItem button style={comprobador('/reportes')}>
                         <ListItemIcon style={{ color: 'inherit' }}><PrintIcon /> </ListItemIcon>
                         <ListItemText primary={'Reportes'} />

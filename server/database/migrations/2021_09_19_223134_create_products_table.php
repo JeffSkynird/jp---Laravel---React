@@ -17,6 +17,8 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('client_code')->nullable();
             $table->string('serial_code')->nullable();
+            $table->string('jp_code')->nullable();
+            $table->string('bar_code')->nullable();
             $table->text('description')->nullable();
             $table->integer('stock')->default(0);
             $table->double('price', 15, 8)->default(0);

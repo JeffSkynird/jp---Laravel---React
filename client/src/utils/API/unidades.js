@@ -1,7 +1,8 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editarUnidad= (id,data, store) => {
+
+export const editar = (id,data, store,carga) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -20,7 +21,7 @@ export const editarUnidad= (id,data, store) => {
       .then((res) => {
         let response = res.data;
         if (response.type != "error") {
-         
+            carga()
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
         } else {
@@ -34,7 +35,7 @@ export const editarUnidad= (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminarUnidad = (id,store) => {
+export const eliminar = (id,store,carga) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"unities/"+id;
@@ -54,6 +55,7 @@ export const eliminarUnidad = (id,store) => {
       .then((res) => {
         let response = res.data
         if(res.data.type!="error"){
+            carga()
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
         }else{
@@ -68,7 +70,7 @@ export const eliminarUnidad = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrarUnidad = (data,store) => {
+export const registrar = (data,store,carga) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"unities";
@@ -86,7 +88,7 @@ export const registrarUnidad = (data,store) => {
       .then((res) => {
         let response = res.data;
         if (response.type != "error") {
-         
+            carga()
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
         } else {
@@ -131,35 +133,4 @@ export const obtenerTodos = (setData,store) => {
 
     });
 }
-export const obtenerSistemaEvaluaciones = (setLabels,setValues,store) => {
-  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
-
-let url = ENTRYPOINT+"systems_evaluations"
-let setting = {
-  method: "Get",
-  url: url,
-  headers: { 'Accept': 'application/json',
-  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
-
-};
-
-
-axios(setting)
-  .then((res) => {
-    let response = res.data
-   if(response.type!="error"){
-      setLabels(response.data.system)
-      setValues(response.data.count)
-
-
-   }else{
-   
-   }
-  })
-  .catch((error) => {
-   
-
-
-  });
-}

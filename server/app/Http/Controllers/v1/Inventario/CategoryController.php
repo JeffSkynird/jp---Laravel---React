@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1\Inventario;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -29,6 +30,7 @@ class CategoryController extends Controller
     public function create(Request $request)
     {
         try {
+            $request['user_id'] = Auth::id();
             Category::create($request->all());
             return response()->json([
                 "status" => "200",
